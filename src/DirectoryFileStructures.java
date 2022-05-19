@@ -109,13 +109,15 @@ public class DirectoryFileStructures{
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static class EmptyBlocks {
-        public int startBlock,endBlock,noOfEmptyBlocks;
-        public EmptyBlocks(int _startBlock, int _endBlock)
+    public static class groupOfBlocks {
+        public int startBlock,endBlock,noOfBlocks;
+        boolean free;
+        public groupOfBlocks(int _startBlock, int _endBlock, boolean _free)
         {
             this.startBlock = _startBlock;
             this.endBlock = _endBlock;
-            noOfEmptyBlocks= _endBlock-_startBlock;
+            this.noOfBlocks= _endBlock-_startBlock;
+            this.free=_free;
         }
 
     }

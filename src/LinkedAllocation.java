@@ -4,12 +4,12 @@ public class LinkedAllocation implements Allocation{
 
 
     @Override
-    public boolean createFile(DirectoryFileStructures.Directory directory, String filePath, int sizeInKB, ArrayList<DirectoryFileStructures.EmptyBlocks> emptyblocks) {
+    public boolean createFile(DirectoryFileStructures.Directory directory, String filePath, int sizeInKB, ArrayList<DirectoryFileStructures.groupOfBlocks> emptyblocks) {
         return false;
     }
 
     @Override
-    public int deleteFile(DirectoryFileStructures.Directory directory, String filePath, ArrayList<DirectoryFileStructures.EmptyBlocks> emptyblocks) {
+    public int deleteFile(DirectoryFileStructures.Directory directory, String filePath, ArrayList<DirectoryFileStructures.groupOfBlocks> emptyblocks) {
         return 0;
     }
 
@@ -19,7 +19,7 @@ public class LinkedAllocation implements Allocation{
     }
 
     @Override
-    public int deleteDirectory(DirectoryFileStructures.Directory directory, String directoryPath, ArrayList<DirectoryFileStructures.EmptyBlocks> emptyblocks, ArrayList<Boolean> state) {
+    public int deleteDirectory(DirectoryFileStructures.Directory directory, String directoryPath, ArrayList<DirectoryFileStructures.groupOfBlocks> emptyblocks, ArrayList<Boolean> state) {
         return 0;
     }
 }
