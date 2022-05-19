@@ -109,7 +109,7 @@ public class DirectoryFileStructures{
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public class EmptyBlocks {
+    public static class EmptyBlocks {
         public int startBlock,endBlock,noOfEmptyBlocks;
         public EmptyBlocks(int _startBlock, int _endBlock)
         {
