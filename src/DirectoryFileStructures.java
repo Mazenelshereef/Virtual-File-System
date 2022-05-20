@@ -109,22 +109,5 @@ public class DirectoryFileStructures{
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static class groupOfBlocks {
-        public int startBlock,endBlock,noOfBlocks;
-        boolean free;
-        public groupOfBlocks(int _startBlock, int _endBlock, boolean _free)
-        {
-            this.startBlock = _startBlock;
-            this.endBlock = _endBlock;
-            this.noOfBlocks= _endBlock-_startBlock;
-            this.free=_free;
-        }
 
-    }
-   /* public static void main(String[] args)
-    {
-        Scanner myObj= new Scanner(System.in);
-        int noWords = myObj.nextInt();
-
-    }*/
 }
