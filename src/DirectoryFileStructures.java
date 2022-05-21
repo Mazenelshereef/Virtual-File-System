@@ -46,6 +46,7 @@ public class DirectoryFileStructures{
         public Directory(String _directoryPath) {
             this.directoryPath = _directoryPath;
             this.directoryName = _directoryPath.substring(_directoryPath.lastIndexOf("/")+1);
+            ArrayList<File> files= new ArrayList<File> ();
             this.isDeleted=false;
         }
 
@@ -61,8 +62,8 @@ public class DirectoryFileStructures{
             this.directoryPath = directoryPath;
         }
 
-        public void setFiles(ArrayList<File> files) {
-            this.files = files;
+        public void addFile(File file) {
+            this.files.add(file);
         }
 
         public void setSubDirectories(ArrayList<Directory> subDirectories) {

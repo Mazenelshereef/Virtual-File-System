@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class LinkedAllocation implements Allocation{
     VirtualFileSystem System;
+    DirectoryFileStructures.Directory rootDirectory;
     ArrayList<Integer> arrOfLinkedBlocks;
 
     public LinkedAllocation() {
@@ -15,6 +16,6 @@ public class LinkedAllocation implements Allocation{
          int index = System.findFirstEmpty();
           arrOfLinkedBlocks.add(index);
       }
-      return arrOfLinkedBlocks;
+      return arrOfLinkedBlocks;//return array that contains the sequence of pointers from start to end
   }
 }

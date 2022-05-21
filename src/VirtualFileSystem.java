@@ -4,16 +4,19 @@ public class VirtualFileSystem {
     int systemSizeInKB;
     Allocation allocation;
     public ArrayList<Integer> Storage;
+    public ArrayList<DirectoryFileStructures.Directory> systemDirectories;    //directories of the system
 
 
     public VirtualFileSystem(Allocation _allocation, int _systemSizeInKB) {
        this.allocation=_allocation;
        this.systemSizeInKB=_systemSizeInKB;
         ArrayList<Integer> Storage = new ArrayList<Integer>(_systemSizeInKB);
+        ArrayList<DirectoryFileStructures.Directory> systemDirectories= new ArrayList<DirectoryFileStructures.Directory>();
         for(int i=0; i<_systemSizeInKB; i++)
         {
             Storage.set(i,0);
         }
+        systemDirectories.add(new DirectoryFileStructures.Directory("root"));
     }
 
     public void setStorage(ArrayList<Integer> storage) {
@@ -56,6 +59,28 @@ public class VirtualFileSystem {
         }
         return index;
 
+    }
+
+    void createFile(DirectoryFileStructures.File file)
+    {
+        //takes name of directory from filepath and check if it exists or not
+        // if it exists it will add file to its directory (in the arraylist of files)
+        // and if not it creates new directory and adds the file to it
+        String path= file.getFilePath();
+
+
+    }
+    void deleteFile(DirectoryFileStructures.File file)
+    {
+        String path= file.getFilePath();
+    }
+    void createFolder(DirectoryFileStructures.File file)
+    {
+        String path= file.getFilePath();
+    }
+    void deleteFolder(DirectoryFileStructures.File file)
+    {
+        String path= file.getFilePath();
     }
 
 
