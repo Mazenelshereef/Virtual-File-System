@@ -13,10 +13,18 @@ public class ContiguousAllocation implements Allocation{
     {
         for(int i=0; i<fileSize; i++)
         {
-            int index = System.findContiguousBlocks(fileSize);
-            //handle if there is no remaining contiguous block
+            Integer index = System.findContiguousBlocks(fileSize);
+            if(index==null)//check if the is not a free contiguous space
+            {
+                return null;
+            }
             arrOfContiguousBlocks.set(i,index+i);
         }
         return arrOfContiguousBlocks;//return array that contains the contiguous memory indexes to be allocated.
+    }
+
+    @Override
+    public ArrayList<Integer> ToDeallocate(DirectoryFileStructures.File file) {
+        return file.getAllocatedBlocks();
     }
 }

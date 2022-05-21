@@ -13,10 +13,19 @@ public class LinkedAllocation implements Allocation{
   {
       for(int i=0; i<fileSize; i++)
       {
-         int index = System.findFirstEmpty();
+         Integer index = System.findFirstEmpty();
+         if(index==null)//there is no empty block
+         {
+             return null;
+         }
           //handle if there is no remaining block
           arrOfLinkedBlocks.add(index);
       }
       return arrOfLinkedBlocks;//return array that contains the sequence of pointers from start to end
   }
+
+    @Override
+    public ArrayList<Integer> ToDeallocate(DirectoryFileStructures.File file) {
+        return file.getAllocatedBlocks();
+    }
 }
