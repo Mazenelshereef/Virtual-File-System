@@ -77,9 +77,9 @@ public class VirtualFileSystem {
     }
     void createFolder(DirectoryFileStructures.Directory directory)
     {
-        //checks if the path of it  exists or not and if not return false
-        //if it exists add it to directories list and to subdirectories list of its parent directory(path)
-        //checks list of directories if there exist a directory with the same name or not and if not return false
+        //(if exist print file already exist) if the path of it not exists check if parent exist in array    ma/ahmed/nour
+        //if parent not exists return false path.
+        // if its parent exist add it to the system directories list and to subdirectories list of its parent directory(path)
         String path= directory.getDirectoryPath();
     }
     void deleteFolder(DirectoryFileStructures.Directory directory)
