@@ -14,6 +14,7 @@ public class LinkedAllocation implements Allocation{
       for(int i=0; i<fileSize; i++)
       {
          int index = System.findFirstEmpty();
+          //handle if there is no remaining block
           arrOfLinkedBlocks.add(index);
       }
       return arrOfLinkedBlocks;//return array that contains the sequence of pointers from start to end

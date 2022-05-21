@@ -28,6 +28,7 @@ public class IndexedAllocation implements Allocation {
         for(int i=0; i<fileSize; i++)
         {
             int index2 = System.findFirstEmpty();
+            //handle if there is no remaining block
             indexblock.contentsOfBlock.add(index2);
         }
         return indexblock;//return  index block that contains array of the actual blocks to be allocated.

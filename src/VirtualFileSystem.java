@@ -61,26 +61,31 @@ public class VirtualFileSystem {
 
     }
 
-    void createFile(DirectoryFileStructures.File file)
+    Boolean createFile(DirectoryFileStructures.File file)
     {
         //takes name of directory from filepath and check if it exists or not
         // if it exists it will add file to its directory (in the arraylist of files)
-        // and if not it creates new directory and adds the file to it
+        // and if not it will return false
         String path= file.getFilePath();
 
-
+      return true;
     }
     void deleteFile(DirectoryFileStructures.File file)
     {
+        //check if file exist then remove it from list of files in its directory
         String path= file.getFilePath();
     }
-    void createFolder(DirectoryFileStructures.File file)
+    void createFolder(DirectoryFileStructures.Directory directory)
     {
-        String path= file.getFilePath();
+        //checks if the path of it  exists or not and if not return false
+        //if it exists add it to directories list and to subdirectories list of its parent directory(path)
+        //checks list of directories if there exist a directory with the same name or not and if not return false
+        String path= directory.getDirectoryPath();
     }
-    void deleteFolder(DirectoryFileStructures.File file)
+    void deleteFolder(DirectoryFileStructures.Directory directory)
     {
-        String path= file.getFilePath();
+        //remove it from list of directories and remove it from its parent subdirectory
+        String path= directory.getDirectoryPath();
     }
 
 

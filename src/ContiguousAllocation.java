@@ -14,6 +14,7 @@ public class ContiguousAllocation implements Allocation{
         for(int i=0; i<fileSize; i++)
         {
             int index = System.findContiguousBlocks(fileSize);
+            //handle if there is no remaining contiguous block
             arrOfContiguousBlocks.set(i,index+i);
         }
         return arrOfContiguousBlocks;//return array that contains the contiguous memory indexes to be allocated.
