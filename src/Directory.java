@@ -1,52 +1,17 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class DirectoryFileStructures{
-    public static class File {
-        private String filePath;
-        private String filename;
-        private ArrayList<Integer> allocatedBlocks;
-        private boolean isDeleted;
-        public File(String filePath, ArrayList<Integer> allocatedBlocks) {
-            this.filePath = filePath;
-            this.filename = filePath.substring(filePath.lastIndexOf("/")+1);
-            this.allocatedBlocks = allocatedBlocks;
-            this.isDeleted=false;
-        }
-
-        public ArrayList<Integer> getAllocatedBlocks() {
-            return allocatedBlocks;
-        }
-
-        public String getFilePath() {
-            return filePath;
-        }
-
-        public void setAllocatedBlocks(ArrayList<Integer> allocatedBlocks) {
-            this.allocatedBlocks = allocatedBlocks;
-        }
-
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
-        }
-
-        public void setDeleted(boolean deleted) {
-            this.isDeleted = deleted;
-        }
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static class Directory {
-        private String directoryPath;
+public class Directory {
+    private String directoryPath;
         private String directoryName;
-        public ArrayList<File> files;
+        private Directory parent;
+        public ArrayList<MyFile> files;
         private ArrayList<Directory> subDirectories;
         private boolean isDeleted = false;
         public Directory(String _directoryPath) {
             this.directoryPath = _directoryPath;
             this.directoryName = _directoryPath.substring(_directoryPath.lastIndexOf("/")+1);
-            ArrayList<File> files= new ArrayList<File> ();
+            this.parent = null;
+            ArrayList<MyFile> files= new ArrayList<MyFile> ();
             ArrayList<Directory> subDirectories = new ArrayList<Directory> ();
             this.isDeleted=false;
         }
@@ -63,7 +28,7 @@ public class DirectoryFileStructures{
             this.directoryPath = directoryPath;
         }
 
-        public void addFile(File file) {
+        public void addFile(MyFile file) {
             this.files.add(file);
         }
         public void AddDirectorytoSubDirectoryList(Directory subdirectory) {
@@ -78,7 +43,7 @@ public class DirectoryFileStructures{
             return directoryName;
         }
 
-        public ArrayList<File> getFiles() {
+        public ArrayList<MyFile> getFiles() {
             return files;
         }
 
@@ -95,14 +60,14 @@ public class DirectoryFileStructures{
             {
                 System.out.print("<"+ directoryName +">");
                 System.out.println("  ");
-                for (File file : files)
+                for (MyFile file : files)
                 {
                     for (int i= 0; i< level + 4; i++)
                     {
                         System.out.print(" ");
                     }
-                    if(file.isDeleted) {System.out.println(file.filename + " is deleted!");}
-                    else {System.out.println(file.filename);}
+                    if(file.isDeleted()) {System.out.println(file.getFilename() + " is deleted!");}
+                    else {System.out.println(file.getFilename());}
                 }
 
                 for (Directory subDirectory : subDirectories)
@@ -112,7 +77,4 @@ public class DirectoryFileStructures{
             }
             else {System.out.print("<" + directoryName + ">" + " is deleted!");}
         }
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }

@@ -2,7 +2,19 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+
+    //default constructor
+    public Main() {
+        
+    }
+
+    //destructor
+    public void finalize() {
+        
+    }
+
     public static void main(String[] args) {
+        Main main = new Main();
         Allocation allocation;
         Scanner sc= new Scanner(System.in);
         System.out.print("Enter the type of Allocation");
@@ -11,7 +23,7 @@ public class Main {
         {
             case ("contiguous"):
                 String contiguousPath = null;//input
-                DirectoryFileStructures.File tobeDeleted = null;//conclude from input
+                MyFile.File tobeDeleted = null;//conclude from input
                 allocation = new ContiguousAllocation();
                 VirtualFileSystem ContiguousSystem = new VirtualFileSystem(allocation,10);
                 ArrayList<Integer> ContiguousArrAdd;
@@ -28,16 +40,16 @@ public class Main {
                 if (ContiguousArrAdd==null)
                 {//cant do operation
                 }
-                DirectoryFileStructures.File contiguousFile= new DirectoryFileStructures.File(contiguousPath,ContiguousArrAdd);
+                MyFile.File contiguousFile= new MyFile.File(contiguousPath,ContiguousArrAdd);
                 for(int i=0; i<ContiguousArrAdd.size(); i++) {
-                    ContiguousSystem.Storage.set(ContiguousArrAdd.get(i),1);//fill storage with 1
+                    ContiguousSystem.Memory.set(ContiguousArrAdd.get(i),1);//fill storage with 1
                 }
                 ContiguousSystem.createFile(contiguousFile);
                 ////////////////////////////////////////////////case delete file////////////////////////////////
 
                 ContiguousArrDelete=allocation.ToDeallocate(tobeDeleted);
                 for(int i=0;i<ContiguousArrDelete.size();i++){
-                ContiguousSystem.Storage.set(ContiguousArrDelete.get(i), 0);
+                ContiguousSystem.Memory.set(ContiguousArrDelete.get(i), 0);
                 }
                 tobeDeleted=ContiguousSystem.returnDesiredFile(contiguousPath);
                 ContiguousSystem.deleteFile(tobeDeleted);
@@ -46,7 +58,7 @@ public class Main {
 
             case("linked"):
                  String linkedPath = null;//input
-                DirectoryFileStructures.File tobeDeleted2 = null;//conclude from input
+                MyFile.File tobeDeleted2 = null;//conclude from input
                  allocation = new LinkedAllocation();
                  VirtualFileSystem LinkedSystem = new VirtualFileSystem(allocation,10);
                 ArrayList<Integer> LinkedArrAdd;
@@ -63,16 +75,16 @@ public class Main {
                 if (LinkedArrAdd==null)
                 {//cant do operation
                 }
-                DirectoryFileStructures.File linkedFile= new DirectoryFileStructures.File(linkedPath,LinkedArrAdd);
+                MyFile.File linkedFile= new MyFile.File(linkedPath,LinkedArrAdd);
                 for(int i=0; i<LinkedArrAdd.size(); i++) {
-                    LinkedSystem.Storage.set(LinkedArrAdd.get(i),1);//fill storage with 1
+                    LinkedSystem.Memory.set(LinkedArrAdd.get(i),1);//fill storage with 1
                 }
                 LinkedSystem.createFile(linkedFile);
                 ////////////////////////////////////////////////case delete file////////////////////////////////
 
                 LinkedArrDelete=allocation.ToDeallocate(tobeDeleted2);
                 for(int i=0;i<LinkedArrDelete.size();i++){
-                    LinkedSystem.Storage.set(LinkedArrDelete.get(i), 0);
+                    LinkedSystem.Memory.set(LinkedArrDelete.get(i), 0);
                 }
                 tobeDeleted2=LinkedSystem.returnDesiredFile(linkedPath);
                 LinkedSystem.deleteFile(tobeDeleted2);
@@ -81,7 +93,7 @@ public class Main {
 
             case("indexed"):
                 String indexedPath = null;//input
-                DirectoryFileStructures.File tobeDeleted3 = null;//conclude from input
+                MyFile.File tobeDeleted3 = null;//conclude from input
                 allocation = new IndexedAllocation();
                 VirtualFileSystem IndexedSystem = new VirtualFileSystem(allocation,10);
                 ArrayList<Integer> IndexedArrAdd;
@@ -98,16 +110,16 @@ public class Main {
                 if (IndexedArrAdd==null)
                 {//cant do operation
                 }
-                DirectoryFileStructures.File indexedFile= new DirectoryFileStructures.File(indexedPath,IndexedArrAdd);
+                MyFile.File indexedFile= new MyFile.File(indexedPath,IndexedArrAdd);
                 for(int i=0; i<IndexedArrAdd.size(); i++) {
-                    IndexedSystem.Storage.set(IndexedArrAdd.get(i),1);//fill storage with 1
+                    IndexedSystem.Memory.set(IndexedArrAdd.get(i),1);//fill storage with 1
                 }
                 IndexedSystem.createFile(indexedFile);
                 ////////////////////////////////////////////////case delete file////////////////////////////////
 
                 IndexedArrDelete=allocation.ToDeallocate(tobeDeleted3);
                 for(int i=0;i<IndexedArrDelete.size();i++){
-                    IndexedSystem.Storage.set(IndexedArrDelete.get(i), 0);
+                    IndexedSystem.Memory.set(IndexedArrDelete.get(i), 0);
                 }
                 tobeDeleted3=IndexedSystem.returnDesiredFile(indexedPath);
                 IndexedSystem.deleteFile(tobeDeleted3);

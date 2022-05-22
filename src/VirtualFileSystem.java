@@ -1,39 +1,59 @@
 import java.util.ArrayList;
 
 public class VirtualFileSystem {
-    int systemSizeInKB;
-    Allocation allocation;
-    public ArrayList<Integer> Storage;
-    public ArrayList<DirectoryFileStructures.Directory> systemDirectories;    //directories of the system
-    public ArrayList<DirectoryFileStructures.File> systemFiles;              //files of the system
+    private int systemSizeInKB;
+    private Allocation allocation;
+    private ArrayList<Integer> Memory;
+    private Directory root;
+    //public ArrayList<Directory> systemDirectories;    //directories of the system
+    //public ArrayList<MyFile> systemFiles;              //files of the system
 
+    public VirtualFileSystem() {
+        root = new Directory("root");
+    }
 
     public VirtualFileSystem(Allocation _allocation, int _systemSizeInKB) {
        this.allocation=_allocation;
        this.systemSizeInKB=_systemSizeInKB;
         ArrayList<Integer> Storage = new ArrayList<Integer>(_systemSizeInKB);
-        ArrayList<DirectoryFileStructures.Directory> systemDirectories= new ArrayList<DirectoryFileStructures.Directory>();
+        ArrayList<Directory> systemDirectories= new ArrayList<Directory>();
         for(int i=0; i<_systemSizeInKB; i++)
         {
             Storage.set(i,0);
         }
-        systemDirectories.add(new DirectoryFileStructures.Directory("root"));
+        systemDirectories.add(new Directory("root"));
     }
 
     public void setStorage(ArrayList<Integer> storage) {
-        Storage = storage;
+        Memory = storage;
     }
 
     public ArrayList<Integer> getStorage() {
-        return Storage;
+        return Memory;
+    }
+
+    public void setAllocation(Allocation allocation) {
+        this.allocation = allocation;
+    }
+
+    public Allocation getAllocation() {
+        return allocation;
+    }
+
+    public void setRoot(Directory root) {
+        this.root = root;
+    }
+
+    public Directory getRoot() {
+        return root;
     }
 
     int findFirstEmpty()
     {
         Integer index = null;
-        for(int i=0; i<Storage.size(); i++)
+        for(int i=0; i<Memory.size(); i++)
         {
-           if(Storage.get(i)==0)
+           if(Memory.get(i)==0)
            {
                index= i;
                break;
@@ -46,14 +66,14 @@ public class VirtualFileSystem {
     {
         Integer index=null;
         int counter=1;
-        for(int i=1; i<Storage.size(); i++)
+        for(int i=1; i<Memory.size(); i++)
         {
             if(counter==numOfBlocks)
             {
                 index=i-numOfBlocks;
                 break;
             }
-            if(Storage.get(i)==0 && Storage.get(i)==Storage.get(i-1))
+            if(Memory.get(i)==0 && Memory.get(i)==Memory.get(i-1))
             {
                 counter++;
             }
@@ -62,9 +82,9 @@ public class VirtualFileSystem {
 
     }
 
-    DirectoryFileStructures.File returnDesiredFile(String Path)
+    MyFile returnDesiredFile(String Path)
     {
-        DirectoryFileStructures.File file = null;
+        MyFile file = null;
         for (int i=0; i<systemFiles.size();i++)
         {
             if(systemFiles.get(i).getFilePath()==Path)
@@ -76,13 +96,13 @@ public class VirtualFileSystem {
         return file;
     }
 
-    Boolean createFile(DirectoryFileStructures.File file)
+    Boolean createFile(MyFile file)
     {
         boolean flag = false;
         String filepath = file.getFilePath();
         int lastSlash = filepath.lastIndexOf("/");
         String result = filepath.substring(0, lastSlash);
-        for (DirectoryFileStructures.Directory dir : systemDirectories)
+        for (Directory dir : systemDirectories)
         {
             if (dir.getDirectoryPath() == result)
             {
@@ -96,13 +116,13 @@ public class VirtualFileSystem {
     // if it exists it will add file to its directory (in the arraylist of files of its directory) and in system arraylist of files
     // and if not it will return false
     }
-    boolean deleteFile(DirectoryFileStructures.File file)
+    boolean deleteFile(MyFile file)
     {
         boolean flag = false;
         String filepath = file.getFilePath();
         int lastSlash = filepath.lastIndexOf("/");
         String result = filepath.substring(0, lastSlash);
-        for (DirectoryFileStructures.Directory dir : systemDirectories)
+        for (Directory dir : systemDirectories)
         {
             if (dir.getDirectoryPath() == result) //if file parent exists
             {
@@ -118,11 +138,11 @@ public class VirtualFileSystem {
         return flag;
     }
 
-    boolean createFolder(DirectoryFileStructures.Directory directory)
+    boolean createFolder(Directory directory)
     {
         boolean  flag= true;
         String path= directory.getDirectoryPath();
-        for (DirectoryFileStructures.Directory dir : systemDirectories){
+        for (Directory dir : systemDirectories){
             if (dir.getDirectoryPath() == path){
                 //dir found
                 flag=false;
@@ -134,7 +154,7 @@ public class VirtualFileSystem {
             flag=false;
             int lastSlash = path.lastIndexOf("/");
             String parent = path.substring(0, lastSlash);
-            for (DirectoryFileStructures.Directory dir : systemDirectories)//search for its parent
+            for (Directory dir : systemDirectories)//search for its parent
             {
                 if (dir.getDirectoryPath() == parent)
                 {
@@ -154,7 +174,7 @@ public class VirtualFileSystem {
         //if parent not exists return false path.
         // if its parent exist add it to the system directories list and to subdirectories list of its parent directory(path)
     }
-    boolean deleteFolder(DirectoryFileStructures.Directory directory)
+    boolean deleteFolder(Directory directory)
     {
         boolean  flag= false;
         String path= directory.getDirectoryPath();

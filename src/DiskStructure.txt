@@ -1,0 +1,2 @@
+root(file0.txt,folder1(file1.txt,folder2(file2.txt)))
+000000000011111111111

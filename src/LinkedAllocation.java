@@ -25,7 +25,7 @@ public class LinkedAllocation implements Allocation{
   }
 
     @Override
-    public ArrayList<Integer> ToDeallocate(DirectoryFileStructures.File file) {
+    public ArrayList<Integer> ToDeallocate(MyFile.File file) {
         return file.getAllocatedBlocks();
     }
 }
