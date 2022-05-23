@@ -2,12 +2,18 @@ import java.util.ArrayList;
 
 public class MyFile {
     private String filePath;
-        private String filename;
+        private String fileName;
+        private Directory parent;
         private ArrayList<Integer> allocatedBlocks;
         private boolean isDeleted;
+
+        public MyFile(String fileName){
+            this.fileName = fileName;
+        }
+
         public MyFile(String filePath, ArrayList<Integer> allocatedBlocks) {
             this.filePath = filePath;
-            this.filename = filePath.substring(filePath.lastIndexOf("/")+1);
+            this.fileName = filePath.substring(filePath.lastIndexOf("/")+1);
             this.allocatedBlocks = allocatedBlocks;
             this.isDeleted=false;
         }
@@ -33,14 +39,22 @@ public class MyFile {
         }
 
         public String getFilename() {
-            return filename;
+            return fileName;
         }
 
         public void setFilename(String filename) {
-            this.filename = filename;
+            this.fileName = filename;
         }
 
         public boolean isDeleted() {
             return isDeleted;
+        }
+
+        public void setParent(Directory parent) {
+            this.parent = parent;
+        }
+
+        public Directory getParent() {
+            return parent;
         }
 }

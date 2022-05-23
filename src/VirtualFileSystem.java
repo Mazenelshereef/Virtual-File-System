@@ -24,11 +24,11 @@ public class VirtualFileSystem {
         systemDirectories.add(new Directory("root"));
     }
 
-    public void setStorage(ArrayList<Integer> storage) {
+    public void setMemory(ArrayList<Integer> storage) {
         Memory = storage;
     }
 
-    public ArrayList<Integer> getStorage() {
+    public ArrayList<Integer> getMemory() {
         return Memory;
     }
 
@@ -159,7 +159,7 @@ public class VirtualFileSystem {
                 if (dir.getDirectoryPath() == parent)
                 {
                     systemDirectories.add(directory);
-                    dir.AddDirectorytoSubDirectoryList(directory);
+                    dir.addDirectory(directory);
                     flag = true;
                     break;
                 }
