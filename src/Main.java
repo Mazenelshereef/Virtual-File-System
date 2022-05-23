@@ -3,141 +3,81 @@ import java.util.Scanner;
 
 public class Main {
 
-    //default constructor
-    public Main() {
-        
-    }
-
-    //destructor
-    public void finalize() {
-        
-    }
-
     public static void main(String[] args) {
-        Main main = new Main();
-        Allocation allocation;
-        Scanner sc= new Scanner(System.in);
-        System.out.print("Enter the type of Allocation");
-        String type = sc.next();
-        switch(type)
+        if (!FileParser.getInstance().parseFile())
         {
-            case ("contiguous"):
-                String contiguousPath = null;//input
-                MyFile.File tobeDeleted = null;//conclude from input
-                allocation = new ContiguousAllocation();
-                VirtualFileSystem ContiguousSystem = new VirtualFileSystem(allocation,10);
-                ArrayList<Integer> ContiguousArrAdd;
-                ArrayList<Integer> ContiguousArrDelete;
-                Scanner Contig= new Scanner(System.in);
-                System.out.print("Enter the command");
-                String command = sc.next();
-                //parse into operation,path,size
-                // switch (command)
-                ////////////////////////////////////////////////case create file////////////////////////////////
-
-                 //take path of file and its size
-                ContiguousArrAdd=allocation.Allocate(10);
-                if (ContiguousArrAdd==null)
-                {//cant do operation
-                }
-                MyFile.File contiguousFile= new MyFile.File(contiguousPath,ContiguousArrAdd);
-                for(int i=0; i<ContiguousArrAdd.size(); i++) {
-                    ContiguousSystem.Memory.set(ContiguousArrAdd.get(i),1);//fill storage with 1
-                }
-                ContiguousSystem.createFile(contiguousFile);
-                ////////////////////////////////////////////////case delete file////////////////////////////////
-
-                ContiguousArrDelete=allocation.ToDeallocate(tobeDeleted);
-                for(int i=0;i<ContiguousArrDelete.size();i++){
-                ContiguousSystem.Memory.set(ContiguousArrDelete.get(i), 0);
-                }
-                tobeDeleted=ContiguousSystem.returnDesiredFile(contiguousPath);
-                ContiguousSystem.deleteFile(tobeDeleted);
-                break;
-
-
-            case("linked"):
-                 String linkedPath = null;//input
-                MyFile.File tobeDeleted2 = null;//conclude from input
-                 allocation = new LinkedAllocation();
-                 VirtualFileSystem LinkedSystem = new VirtualFileSystem(allocation,10);
-                ArrayList<Integer> LinkedArrAdd;
-                ArrayList<Integer> LinkedArrDelete;
-                Scanner linked= new Scanner(System.in);    //System.in is a standard input stream
-                System.out.print("Enter the command");
-                String command2 = sc.next();
-                //parse into operation,path,size
-                // switch (command2)
-                ////////////////////////////////////////////////case create file////////////////////////////////
-
-                 //take path of file and its size
-                LinkedArrAdd = allocation.Allocate(10);
-                if (LinkedArrAdd==null)
-                {//cant do operation
-                }
-                MyFile.File linkedFile= new MyFile.File(linkedPath,LinkedArrAdd);
-                for(int i=0; i<LinkedArrAdd.size(); i++) {
-                    LinkedSystem.Memory.set(LinkedArrAdd.get(i),1);//fill storage with 1
-                }
-                LinkedSystem.createFile(linkedFile);
-                ////////////////////////////////////////////////case delete file////////////////////////////////
-
-                LinkedArrDelete=allocation.ToDeallocate(tobeDeleted2);
-                for(int i=0;i<LinkedArrDelete.size();i++){
-                    LinkedSystem.Memory.set(LinkedArrDelete.get(i), 0);
-                }
-                tobeDeleted2=LinkedSystem.returnDesiredFile(linkedPath);
-                LinkedSystem.deleteFile(tobeDeleted2);
-                break;
-
-
-            case("indexed"):
-                String indexedPath = null;//input
-                MyFile.File tobeDeleted3 = null;//conclude from input
-                allocation = new IndexedAllocation();
-                VirtualFileSystem IndexedSystem = new VirtualFileSystem(allocation,10);
-                ArrayList<Integer> IndexedArrAdd;
-                ArrayList<Integer> IndexedArrDelete;
-                Scanner indexed= new Scanner(System.in);    //System.in is a standard input stream
-                System.out.print("Enter the command");
-                String command3 = sc.next();
-                //parse into operation,path,size
-                // switch (command)
-
-                ////////////////////////////////////////////////case create file////////////////////////////////
-                //take path of file and its size
-                IndexedArrAdd= allocation.Allocate(10);
-                if (IndexedArrAdd==null)
-                {//cant do operation
-                }
-                MyFile.File indexedFile= new MyFile.File(indexedPath,IndexedArrAdd);
-                for(int i=0; i<IndexedArrAdd.size(); i++) {
-                    IndexedSystem.Memory.set(IndexedArrAdd.get(i),1);//fill storage with 1
-                }
-                IndexedSystem.createFile(indexedFile);
-                ////////////////////////////////////////////////case delete file////////////////////////////////
-
-                IndexedArrDelete=allocation.ToDeallocate(tobeDeleted3);
-                for(int i=0;i<IndexedArrDelete.size();i++){
-                    IndexedSystem.Memory.set(IndexedArrDelete.get(i), 0);
-                }
-                tobeDeleted3=IndexedSystem.returnDesiredFile(indexedPath);
-                IndexedSystem.deleteFile(tobeDeleted3);
-
-                break;
-
+            System.out.println("Enter the size of the system in KB: ");
+            Scanner scanner = new Scanner(System.in);
+            int systemSizeInKB = scanner.nextInt();
+            VirtualFileSystem.getInstance().setSystemSizeInKB(systemSizeInKB);
         }
+        // TODO code application logic here
+        VirtualFileSystem vfs = VirtualFileSystem.getInstance();
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Choose type of allocation: \n"
+                            + "1- Contiguous allocation\n"
+                            + "2- Indexed allocation\n"
+                            + "3- Linked allocation\n");
+        int allocationType = sc.nextInt();
 
-
-
-
-
-
-
-
-
-
-
+        if (allocationType == 1) {
+            ContiguousAllocator ca = new ContiguousAllocator();
+            vfs.setAllocation(ca);
+        } else if (allocationType == 2) {
+            IndexedAllocator ia = new IndexedAllocator();
+            vfs.setAllocation(ia);
+        } else if (allocationType == 3) {
+            LinkedAllocator la = new LinkedAllocator();
+            vfs.setAllocation(la);
+        } else {
+            System.out.println("Invalid allocation type");
+            return;
+        }
+        Scanner sc2 = new Scanner(System.in);
+        while (true) {
+            System.out.print("Enter command: \n");
+            String input = sc2.nextLine();
+            ArrayList<String> command;
+            try {
+                command = CommandParser.getInstance().parseCommand(input);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+                continue;
+            }
+            if (command.get(0).equals("CreateFile")) {
+                try {
+                    vfs.createFile(command.get(1), Integer.parseInt(command.get(2)));
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
+            } else if (command.get(0).equals("DeleteFile")) {
+                try {
+                    vfs.deleteFile(command.get(1));
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
+            } else if (command.get(0).equals("CreateFolder")) {
+                try {
+                    vfs.createFolder(command.get(1));
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
+            } else if (command.get(0).equals("DeleteFolder")) {
+                try {
+                    vfs.deleteFolder(command.get(1));
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
+            } else if (command.get(0).equals("DisplayDiskStatus")) {
+                // TODO
+            } else if (command.get(0).equals("DisplayDiskStructure")) {
+                // TODO
+            } else if (command.get(0).equals("Exit")) {
+                FileParser.getInstance().updateFile();
+                System.out.println("Exiting...");
+                break;
+            }
+        }
     }
-    
+
 }

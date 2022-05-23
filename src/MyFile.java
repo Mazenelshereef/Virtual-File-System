@@ -1,60 +1,61 @@
 import java.util.ArrayList;
 
 public class MyFile {
-    private String filePath;
-        private String fileName;
-        private Directory parent;
-        private ArrayList<Integer> allocatedBlocks;
-        private boolean isDeleted;
+    private String fileName;
+    private Directory parent;
+    private ArrayList<Integer> allocatedBlocks;
+    private boolean isDeleted;
 
-        public MyFile(String fileName){
-            this.fileName = fileName;
-        }
+    public MyFile(String fileName) {
+        this.fileName = fileName;
+        isDeleted = false;
+    }
 
-        public MyFile(String filePath, ArrayList<Integer> allocatedBlocks) {
-            this.filePath = filePath;
-            this.fileName = filePath.substring(filePath.lastIndexOf("/")+1);
-            this.allocatedBlocks = allocatedBlocks;
-            this.isDeleted=false;
-        }
+    public MyFile(String fileName, ArrayList<Integer> allocatedBlocks) {
+        this.fileName = fileName;
+        this.allocatedBlocks = allocatedBlocks;
+        this.isDeleted = false;
+    }
 
-        public ArrayList<Integer> getAllocatedBlocks() {
-            return allocatedBlocks;
-        }
+    public ArrayList<Integer> getAllocatedBlocks() {
+        return allocatedBlocks;
+    }
 
-        public String getFilePath() {
-            return filePath;
-        }
+    public void setAllocatedBlocks(ArrayList<Integer> allocatedBlocks) {
+        this.allocatedBlocks = allocatedBlocks;
+    }
 
-        public void setAllocatedBlocks(ArrayList<Integer> allocatedBlocks) {
-            this.allocatedBlocks = allocatedBlocks;
-        }
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
+    }
 
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
-        }
+    public String getFileName() {
+        return fileName;
+    }
 
-        public void setDeleted(boolean deleted) {
-            this.isDeleted = deleted;
-        }
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-        public String getFilename() {
-            return fileName;
-        }
+    public boolean isDeleted() {
+        return isDeleted;
+    }
 
-        public void setFilename(String filename) {
-            this.fileName = filename;
-        }
+    public void setParent(Directory parent) {
+        this.parent = parent;
+    }
 
-        public boolean isDeleted() {
-            return isDeleted;
-        }
+    public Directory getParent() {
+        return parent;
+    }
 
-        public void setParent(Directory parent) {
-            this.parent = parent;
+    public String getFilePath(){
+        String filePath = "";
+        Directory currentDirectory = parent;
+        while(currentDirectory != null){
+            filePath = "/" + currentDirectory.getDirectoryName() + filePath;
+            currentDirectory = currentDirectory.getParent();
         }
-
-        public Directory getParent() {
-            return parent;
-        }
+        return filePath;
+    }
 }

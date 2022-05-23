@@ -16,8 +16,8 @@ public class FileParser {
         return instance;
     }
 
-    public void parseFile(){
-        VirtualFileSystem system = new VirtualFileSystem();
+    public boolean parseFile(){
+        VirtualFileSystem system = VirtualFileSystem.getInstance();
         File file = new File("DiskStructure.txt");
         //read file
         try {
@@ -29,17 +29,22 @@ public class FileParser {
             }
             fileReader.close();
             String fileContent = sb.toString();
+            //check if it is empty
+            if (fileContent.equals("")) {
+                return false;
+            }
             //parse file
             String[] lines = fileContent.split("\n");
             //first line is the directory structure
             String directoryStructure = lines[0];
             Directory currentDirectory = system.getRoot();
             int startIndex = 1;
-            for (int i = 1; i < directoryStructure.length(); i++) {
+            for (int i = 5; i < directoryStructure.length(); i++) {
                 if (directoryStructure.charAt(i) == '(')
                 {
                     String folderName = directoryStructure.substring(startIndex, i);
-                    currentDirectory.addDirectory(folderName);
+                    Directory directory = new Directory(folderName);
+                    currentDirectory.addSubDirectory(directory);
                     currentDirectory = currentDirectory.getSubDirectories().get(currentDirectory.getSubDirectories().size() - 1);
                     startIndex = i + 1;
                 }
@@ -48,7 +53,8 @@ public class FileParser {
                     if (i > startIndex)
                     {
                         String fileName = directoryStructure.substring(startIndex, i);
-                        currentDirectory.addFile(fileName);
+                        MyFile fileToAdd = new MyFile(fileName);
+                        currentDirectory.addFile(fileToAdd);
                     }
                     currentDirectory = currentDirectory.getParent();
                 }
@@ -57,7 +63,8 @@ public class FileParser {
                     if (directoryStructure.charAt(i-1) != ')')
                     {
                         String fileName = directoryStructure.substring(startIndex, i);
-                        currentDirectory.addFile(fileName);
+                        MyFile fileToAdd = new MyFile(fileName);
+                        currentDirectory.addFile(fileToAdd);
                         startIndex = i + 1;
                     }
                 }
@@ -71,16 +78,29 @@ public class FileParser {
             }
             system.setMemory(emptyBlockList);
 
-            //remaining lines are the files
-
+            //remaining lines are the files allocated blocks
+            for (int i = 2; i < lines.length; i++) {
+                String filePath = lines[i].substring(0, lines[i].indexOf(" "));
+                String fileBlocks = lines[i].substring(lines[i].indexOf(" ") + 1);
+                ArrayList<Integer> fileBlockList = new ArrayList<Integer>();
+                for (int j = 0; j < fileBlocks.length(); j+=2) {
+                    fileBlockList.add(Integer.parseInt(fileBlocks.substring(j, j + 1)));
+                }
+                //get the file with path
+                MyFile fileToAdd = system.getFile(filePath);
+                //add the blocks to the file
+                if (fileToAdd != null)
+                    fileToAdd.setAllocatedBlocks(fileBlockList);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public void updateFile(){
         //overwrite file
-        VirtualFileSystem system = new VirtualFileSystem();
+        VirtualFileSystem system = VirtualFileSystem.getInstance();
         File file = new File("DiskStructure.txt");
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -91,8 +111,16 @@ public class FileParser {
             //write empty blocks
             fileWriter.write(system.getMemory().toString());
             fileWriter.write('\n');
-            //write files
-            
+            //write files allocated blocks
+            for (MyFile fileToWrite : system.getAllFiles()) {
+                fileWriter.write(fileToWrite.getFilePath() + " ");
+                for(int i = 0; i < fileToWrite.getAllocatedBlocks().size(); i++) {
+                    fileWriter.write(fileToWrite.getAllocatedBlocks().get(i).toString());
+                    if (i < fileToWrite.getAllocatedBlocks().size() - 1)
+                        fileWriter.write(" ");
+                }
+                fileWriter.write('\n');
+            }
             fileWriter.close();
         } catch (Exception e) {
             e.printStackTrace();

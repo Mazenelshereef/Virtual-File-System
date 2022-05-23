@@ -1,19 +1,17 @@
 import java.util.ArrayList;
 
 public class Directory {
-    private String directoryPath;
     private String directoryName;
     private Directory parent;
     public ArrayList<MyFile> files;
     private ArrayList<Directory> subDirectories;
     private boolean isDeleted = false;
 
-    public Directory(String _directoryPath) {
-        this.directoryPath = _directoryPath;
-        this.directoryName = _directoryPath.substring(_directoryPath.lastIndexOf("/") + 1);
+    public Directory(String directoryName) {
+        this.directoryName = directoryName;
         this.parent = null;
-        ArrayList<MyFile> files = new ArrayList<MyFile>();
-        ArrayList<Directory> subDirectories = new ArrayList<Directory>();
+        files = new ArrayList<MyFile>();
+        subDirectories = new ArrayList<Directory>();
         this.isDeleted = false;
     }
 
@@ -34,18 +32,12 @@ public class Directory {
         return parent;
     }
 
-    public void setDirectoryPath(String directoryPath) {
-        this.directoryPath = directoryPath;
-    }
-
-    public void addFile(String fileName) {
-        MyFile file = new MyFile(fileName);
+    public void addFile(MyFile file) {
         file.setParent(this);
         files.add(file);
     }
 
-    public void addDirectory(String subdirectoryName) {
-        Directory subdirectory = new Directory(this.directoryPath + "/" + subdirectoryName);
+    public void addSubDirectory(Directory subdirectory) {
         subdirectory.setParent(this);
         this.subDirectories.add(subdirectory);
     }
@@ -66,8 +58,44 @@ public class Directory {
         return subDirectories;
     }
 
-    public String getDirectoryPath() {
-        return directoryPath;
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public MyFile getFile(String fileName){
+        for(MyFile file : files){
+            if(file.getFileName().equals(fileName)){
+                return file;
+            }
+        }
+        return null;
+    }
+
+    public Directory getSubDirectory(String subdirectoryName){
+        for(Directory subdirectory : subDirectories){
+            if(subdirectory.getDirectoryName().equals(subdirectoryName)){
+                return subdirectory;
+            }
+        }
+        return null;
+    }
+
+    public void deleteFile(MyFile fileToDelete){
+        for(MyFile file : files){
+            if(file == fileToDelete){
+                files.remove(file);
+                break;
+            }
+        }
+    }
+
+    public void deleteSubDirectory(Directory subdirectoryToDelete){
+        for(Directory subdirectory : subDirectories){
+            if(subdirectory == subdirectoryToDelete){
+                subDirectories.remove(subdirectory);
+                break;
+            }
+        }
     }
 
     public void printDirectoryStructure(int level) {
@@ -79,9 +107,9 @@ public class Directory {
                     System.out.print(" ");
                 }
                 if (file.isDeleted()) {
-                    System.out.println(file.getFilename() + " is deleted!");
+                    System.out.println(file.getFileName() + " is deleted!");
                 } else {
-                    System.out.println(file.getFilename());
+                    System.out.println(file.getFileName());
                 }
             }
 
@@ -96,11 +124,17 @@ public class Directory {
     public String getDirectoryStructure() {
         String directoryStructure = "";
         for (MyFile file : files) {
-            directoryStructure += file.getFilename() + ",";
+            directoryStructure += file.getFileName();
+            if (files.get(files.size()-1) != file || subDirectories.size() != 0) {
+                directoryStructure += ",";
+            }
         }
         for (Directory subDirectory : subDirectories) {
             directoryStructure += subDirectory.getDirectoryName() + "(";
             directoryStructure += subDirectory.getDirectoryStructure() + ")";
+            if (subDirectories.get(subDirectories.size()-1) != subDirectory) {
+                directoryStructure += ",";
+            }
         }
         return directoryStructure;
     }
