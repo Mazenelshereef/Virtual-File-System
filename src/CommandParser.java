@@ -1,9 +1,8 @@
-import java.rmi.server.ExportException;
 import java.util.ArrayList;
 
 public class CommandParser {
-    private String[] allCmds = {"CreatFile", "CreateFolder", "DeleteFile", "DeleteFolder", "DispalyDiskStatus",
-            "DisplayDiskStructure","Exit" };
+    private String[] allCmds = { "CreatFile", "CreateFolder", "DeleteFile", "DeleteFolder", "DispalyDiskStatus",
+            "DisplayDiskStructure", "Exit" };
 
     public CommandParser() {
     }
@@ -35,19 +34,22 @@ public class CommandParser {
 
                     // call function print DisplayDiskStructure
                 }
-                
-            }
-            else if (command.equals("Exit"))
-            { if (numberOfArguments != 1) {
+
+            } else if (command.equals("Exit")) {
+                if (numberOfArguments != 1) {
+                    throw new ArithmeticException("Wrong Number Of Argument!!");
+                } else {
+                    arguments.add(command);
+
+                    // call function print DisplayDiskStructure
+                }
+
+            } else if (command.equals("CreatFile") ||
+                    command.equals("DeleteFolder") ||
+                    command.equals("DeleteFile") ||
+                    command.equals("CreatFolder")) {
                 throw new ArithmeticException("Wrong Number Of Argument!!");
             } else {
-                arguments.add(command);
-
-                // call function print DisplayDiskStructure
-            }
-
-            }
-             else {
                 throw new ArithmeticException("command not available!");
             }
 
@@ -111,11 +113,11 @@ public class CommandParser {
 
         }
 
-    return arguments;
+        return arguments;
     }
 
     public static void main(String[] args) {
         CommandParser cmd = new CommandParser();
-        System.out.println(cmd.parse("CreateFile s ss"));
+        System.out.println(cmd.parse("CreatFile"));
     }
 }
