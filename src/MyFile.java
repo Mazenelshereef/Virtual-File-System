@@ -5,18 +5,15 @@ public class MyFile {
     private Directory parent;
     private ArrayList<Integer> allocatedBlocks;
     private AllocationType allocationType;
-    private boolean isDeleted;
 
     public MyFile(String fileName) {
         this.fileName = fileName;
-        isDeleted = false;
     }
 
     public MyFile(String fileName, ArrayList<Integer> allocatedBlocks, AllocationType allocationType) {
         this.fileName = fileName;
         this.allocatedBlocks = allocatedBlocks;
         this.allocationType = allocationType;
-        this.isDeleted = false;
     }
 
     public ArrayList<Integer> getAllocatedBlocks() {
@@ -27,20 +24,12 @@ public class MyFile {
         this.allocatedBlocks = allocatedBlocks;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.isDeleted = deleted;
-    }
-
     public String getFileName() {
         return fileName;
     }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
     }
 
     public void setParent(Directory parent) {

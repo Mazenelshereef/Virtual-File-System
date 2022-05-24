@@ -10,7 +10,7 @@ public class IndexedAllocator implements Allocator {
     public ArrayList<Integer> allocate(int fileSize) throws Exception {
         ArrayList<Integer> allocatedBlocks = new ArrayList<Integer>();
         ArrayList<Integer> freeBlocks = SpaceManager.getInstance().getFreeBlocks();
-        //an extra block is allocated for the header
+        //an extra block is allocated for the index block
         if (freeBlocks.size() < fileSize + 1) {
             throw new Exception("ERROR: Not enough free blocks!");
         }

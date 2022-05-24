@@ -3,15 +3,32 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
-        if (!FileParser.getInstance().parseFile())
-        {
-            System.out.println("Enter the size of the system in KB: ");
-            Scanner scanner = new Scanner(System.in);
-            int systemSizeInKB = scanner.nextInt();
-            VirtualFileSystem.getInstance().setSystemSizeInKB(systemSizeInKB);
+    public static void setupSystem() {
+        try {
+            if (!FileParser.getInstance().parseFile())
+            {
+                System.out.println("Enter the size of the system in KB: ");
+                Scanner scanner = new Scanner(System.in);
+                int systemSizeInKB = scanner.nextInt();
+                VirtualFileSystem.getInstance().setSystemSizeInKB(systemSizeInKB);
+                scanner.close();
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());;
         }
-        // TODO code application logic here
+    }
+
+    public static void closeSystem(){
+        try {
+            FileParser.getInstance().updateFile();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    public static void main(String[] args) {
+        //read the file and set up the system first
+        setupSystem();
         VirtualFileSystem vfs = VirtualFileSystem.getInstance();
         Scanner sc = new Scanner(System.in);
         System.out.print("Choose type of allocation: \n"
@@ -19,7 +36,6 @@ public class Main {
                             + "2- Indexed allocation\n"
                             + "3- Linked allocation\n");
         int allocationType = sc.nextInt();
-
         if (allocationType == 1) {
             ContiguousAllocator ca = new ContiguousAllocator();
             vfs.setAllocation(ca);
@@ -31,6 +47,7 @@ public class Main {
             vfs.setAllocation(la);
         } else {
             System.out.println("Invalid allocation type");
+            sc.close();
             return;
         }
         Scanner sc2 = new Scanner(System.in);
@@ -69,15 +86,17 @@ public class Main {
                     System.out.println(e.toString());
                 }
             } else if (command.get(0).equals("DisplayDiskStatus")) {
-                // TODO
+                vfs.displayDiskStatus();
             } else if (command.get(0).equals("DisplayDiskStructure")) {
-                // TODO
+                vfs.displayDiskStructure();
             } else if (command.get(0).equals("Exit")) {
-                FileParser.getInstance().updateFile();
                 System.out.println("Exiting...");
                 break;
             }
         }
+        sc.close();
+        sc2.close();
+        closeSystem();
     }
 
 }

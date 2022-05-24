@@ -11,9 +11,18 @@ public class LinkedAllocator implements Allocator{
         if(freeBlocks.size() < fileSize){
             throw new Exception("ERROR: Not enough free blocks!");
         }
-        for(int i = 0; i < fileSize; i++){
+        //add the start
+        allocatedBlocks.add(freeBlocks.get(0));
+        //add the end
+        allocatedBlocks.add(freeBlocks.get(fileSize-1));
+        //add the links
+        for (int i = 0; i < fileSize - 1; i++) {
             allocatedBlocks.add(freeBlocks.get(i));
+            allocatedBlocks.add(freeBlocks.get(i+1));
         }
+        //add the last link
+        allocatedBlocks.add(freeBlocks.get(fileSize-1));
+        allocatedBlocks.add(-1);
         return allocatedBlocks;
     }
 

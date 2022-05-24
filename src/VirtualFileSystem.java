@@ -1,4 +1,3 @@
-import java.security.interfaces.ECKey;
 import java.util.ArrayList;
 
 public class VirtualFileSystem {
@@ -139,9 +138,7 @@ public class VirtualFileSystem {
         MyFile file = parentDirectory.getFile(fileName);
         if (file == null)
             throw new Exception("ERROR: File does not exist!");
-        for (int i = 0; i < file.getAllocatedBlocks().size(); i++) {
-            memory.set(file.getAllocatedBlocks().get(i), 0);
-        }
+        SpaceManager.getInstance().deallocateMemory(file.getAllocatedBlocks(), file.getAllocationType());
         parentDirectory.deleteFile(file);
     }
 
@@ -165,7 +162,36 @@ public class VirtualFileSystem {
         Directory folder = parentDirectory.getSubDirectory(folderName);
         if (folder == null)
             throw new Exception("ERROR: Folder does not exist!");
+        //delete all the files in the folder
+        for (int i = 0; i < folder.getFiles().size(); i++) {
+            MyFile file = folder.getFiles().get(i);
+            SpaceManager.getInstance().deallocateMemory(file.getAllocatedBlocks(), file.getAllocationType());
+        }
+        //delete all the sub-folders in the folder
+        for (int i = 0; i < folder.getSubDirectories().size(); i++) {
+            Directory subFolder = folder.getSubDirectories().get(i);
+            deleteFolder(directoryPath + "/" + subFolder.getDirectoryName());
+        }
         parentDirectory.deleteSubDirectory(folder);
     }
 
+    public void displayDiskStatus(){
+        System.out.println("Disk Status:");
+        ArrayList<Integer> freeBlocks = SpaceManager.getInstance().getFreeBlocks();
+        System.out.println("Empty space: " + freeBlocks.size() + " blocks");
+        for (int i = 0; i < freeBlocks.size(); i++) {
+            System.out.print(freeBlocks.get(i) + " ");
+        }
+        System.out.println();
+        ArrayList<Integer> usedBlocks = SpaceManager.getInstance().getUsedBlocks();
+        System.out.println("Allocated space: " + usedBlocks.size() + " blocks");
+        for (int i = 0; i < usedBlocks.size(); i++) {
+            System.out.print(usedBlocks.get(i) + " ");
+        }
+        System.out.println();
+    }
+
+    public void displayDiskStructure(){
+        root.printDirectoryStructure(0);
+    }
 }

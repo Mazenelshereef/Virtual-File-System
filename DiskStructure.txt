@@ -1,5 +1,0 @@
-root(sx,o(ss,sx))
-1111100000
-root/sx 4
-root/o/ss 0 1
-root/o/sx 2 3

@@ -17,7 +17,8 @@ public class CommandParser {
     }
 
     public ArrayList<String> parseCommand(String command) throws Exception {
-        String[] substrings = command.split("\s+");
+        //split the command by spaces
+        String[] substrings = command.split(" ");
         boolean test = Arrays.asList(allCmds).contains(substrings[0]);
         if(test==false){
             throw new Exception("Wrong Command Name!!") ;
@@ -38,6 +39,5 @@ public class CommandParser {
         for(int i=0;i<substrings.length;i++)Arguments.add(substrings[i]);
         return Arguments;
     }
-
 
 }
