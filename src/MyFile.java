@@ -50,10 +50,10 @@ public class MyFile {
     }
 
     public String getFilePath(){
-        String filePath = "";
+        String filePath = fileName;
         Directory currentDirectory = parent;
         while(currentDirectory != null){
-            filePath = "/" + currentDirectory.getDirectoryName() + filePath;
+            filePath = currentDirectory.getDirectoryName() + "/" + filePath;
             currentDirectory = currentDirectory.getParent();
         }
         return filePath;

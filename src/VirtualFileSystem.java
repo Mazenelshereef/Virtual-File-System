@@ -49,7 +49,7 @@ public class VirtualFileSystem {
 
     public MyFile getFile(String filePath) {
         // check that the main folder is "root"
-        if (filePath.substring(0, filePath.indexOf("/")) != "root")
+        if (!filePath.substring(0, filePath.indexOf("/")).equals("root"))
             return null;
         else
             filePath = filePath.substring(filePath.indexOf("/") + 1);
@@ -88,7 +88,7 @@ public class VirtualFileSystem {
         if (directoryPath.equals("root"))
             return root;
         // check that the main folder is "root"
-        if (directoryPath.substring(0, directoryPath.indexOf("/")) != "root")
+        if (!directoryPath.substring(0, directoryPath.indexOf("/")).equals("root"))
             return null;
         else
             directoryPath = directoryPath.substring(directoryPath.indexOf("/") + 1);
@@ -107,6 +107,9 @@ public class VirtualFileSystem {
     }
 
     void createFile(String filePath, int fileSize) throws Exception {
+        //check that no file exists with the same path
+        if (getFile(filePath) != null)
+            throw new Exception("ERROR: File already exists with the same path!");
         Directory parentDirectory = getDirectory(filePath.substring(0, filePath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
@@ -132,6 +135,9 @@ public class VirtualFileSystem {
     }
 
     void createFolder(String directoryPath) throws Exception {
+        //check that no folder exists with the same path
+        if (getDirectory(directoryPath) != null)
+            throw new Exception("ERROR: Folder already exists with the same path!");
         Directory parentDirectory = getDirectory(directoryPath.substring(0, directoryPath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");

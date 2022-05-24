@@ -52,7 +52,7 @@ public class CommandParser {
                     // call function print DisplayDiskStructure
                 }
 
-            } else if (command.equals("CreatFile") ||
+            } else if (command.equals("CreateFile") ||
                     command.equals("DeleteFolder") ||
                     command.equals("DeleteFile") ||
                     command.equals("CreatFolder")) {
@@ -122,5 +122,13 @@ public class CommandParser {
         }
 
         return arguments;
+    }
+
+    public static void main(String[] args) {
+        String command = "DeleteFolder C:\\Users\\user\\Desktop\\test.txt";
+        ArrayList<String> arguments = CommandParser.getInstance().parseCommand(command);
+        for (String arg : arguments) {
+            System.out.println(arg);
+        }
     }
 }

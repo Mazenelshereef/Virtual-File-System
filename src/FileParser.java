@@ -38,7 +38,7 @@ public class FileParser {
             //first line is the directory structure
             String directoryStructure = lines[0];
             Directory currentDirectory = system.getRoot();
-            int startIndex = 1;
+            int startIndex = 5;
             for (int i = 5; i < directoryStructure.length(); i++) {
                 if (directoryStructure.charAt(i) == '(')
                 {
@@ -57,6 +57,7 @@ public class FileParser {
                         currentDirectory.addFile(fileToAdd);
                     }
                     currentDirectory = currentDirectory.getParent();
+                    startIndex = i + 1;
                 }
                 else if(directoryStructure.charAt(i) == ',')
                 {
@@ -73,24 +74,26 @@ public class FileParser {
             //second line is the empty blocks of the virtual disk
             String emptyBlocks = lines[1];
             ArrayList<Integer> emptyBlockList = new ArrayList<Integer>();
-            for (int i = 0; i < emptyBlocks.length(); i++) {
+            for (int i = 0; i < emptyBlocks.length() - 1; i++) {
                 emptyBlockList.add(Integer.parseInt(emptyBlocks.substring(i, i + 1)));
             }
+            emptyBlockList.add(Integer.parseInt(emptyBlocks.substring(emptyBlocks.length() - 1)));
             system.setMemory(emptyBlockList);
 
             //remaining lines are the files allocated blocks
             for (int i = 2; i < lines.length; i++) {
                 String filePath = lines[i].substring(0, lines[i].indexOf(" "));
-                String fileBlocks = lines[i].substring(lines[i].indexOf(" ") + 1);
+                String[] fileBlocks = lines[i].substring(lines[i].indexOf(" ") + 1).split(" ");
                 ArrayList<Integer> fileBlockList = new ArrayList<Integer>();
-                for (int j = 0; j < fileBlocks.length(); j+=2) {
-                    fileBlockList.add(Integer.parseInt(fileBlocks.substring(j, j + 1)));
+                for (int j = 0; j < fileBlocks.length; j++) {
+                    fileBlockList.add(Integer.parseInt(fileBlocks[j]));
                 }
                 //get the file with path
                 MyFile fileToAdd = system.getFile(filePath);
                 //add the blocks to the file
                 if (fileToAdd != null)
                     fileToAdd.setAllocatedBlocks(fileBlockList);
+                System.out.println(fileToAdd.getAllocatedBlocks());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,7 +112,9 @@ public class FileParser {
             fileWriter.write(system.getRoot().getDirectoryStructure());
             fileWriter.write(")\n");
             //write empty blocks
-            fileWriter.write(system.getMemory().toString());
+            for (Integer block : system.getMemory()) {
+                fileWriter.write(block.toString());
+            }
             fileWriter.write('\n');
             //write files allocated blocks
             for (MyFile fileToWrite : system.getAllFiles()) {
