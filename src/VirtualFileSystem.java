@@ -86,6 +86,8 @@ public class VirtualFileSystem {
     public Directory getDirectory(String directoryPath) {
         if (directoryPath.equals("root"))
             return root;
+        if (!directoryPath.contains("/"))
+            return null;
         // check that the main folder is "root"
         if (!directoryPath.substring(0, directoryPath.indexOf("/")).equals("root"))
             return null;
