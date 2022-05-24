@@ -55,7 +55,21 @@ public class SpaceManager {
         return freeBlocks;
     }
 
-    public void allocateMemory(ArrayList<Integer> blocks) throws Exception {
+    public void allocateMemory(ArrayList<Integer> blocks, AllocationType allocationType) throws Exception {
+        //get the actual blocks to allocate
+        ArrayList<Integer> blockToAllocate = new ArrayList<Integer>();
+        if (allocationType == AllocationType.CONTIGUOUS) {
+            //blocks.get(0) is the start of the contiguous block
+            //blocks.get(1) is the length of the contiguous block
+            for (int i = blocks.get(0); i < blocks.get(1) + blocks.get(0); i++) {
+                blockToAllocate.add(i);
+            }
+        } else if (allocationType == AllocationType.LINKED) {
+            //TODO: implement linked allocation
+        } else {
+            //TODO: implement Indexed allocation
+        }
+        //allocate the blocks
         for (int i = 0; i < blocks.size(); i++) {
             if (VirtualFileSystem.getInstance().getMemory().get(blocks.get(i)) != 0) {
                 throw new Exception("ERROR: Block " + blocks.get(i) + " is already allocated!");

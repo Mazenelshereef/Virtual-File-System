@@ -4,6 +4,7 @@ public class MyFile {
     private String fileName;
     private Directory parent;
     private ArrayList<Integer> allocatedBlocks;
+    private AllocationType allocationType;
     private boolean isDeleted;
 
     public MyFile(String fileName) {
@@ -11,9 +12,10 @@ public class MyFile {
         isDeleted = false;
     }
 
-    public MyFile(String fileName, ArrayList<Integer> allocatedBlocks) {
+    public MyFile(String fileName, ArrayList<Integer> allocatedBlocks, AllocationType allocationType) {
         this.fileName = fileName;
         this.allocatedBlocks = allocatedBlocks;
+        this.allocationType = allocationType;
         this.isDeleted = false;
     }
 
@@ -47,6 +49,14 @@ public class MyFile {
 
     public Directory getParent() {
         return parent;
+    }
+
+    public void setAllocationType(AllocationType allocationType) {
+        this.allocationType = allocationType;
+    }
+
+    public AllocationType getAllocationType() {
+        return allocationType;
     }
 
     public String getFilePath(){

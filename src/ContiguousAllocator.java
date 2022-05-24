@@ -27,11 +27,8 @@ public class ContiguousAllocator implements Allocator{
         {
             throw new Exception("ERROR: Not enough free blocks!");
         }
-        int start = contiguousFreeBlocks.get(bestFitIndex).start;
-        for(int i=start; i<start+fileSize; i++)
-        {
-            allocatedBlocks.add(i);
-        }
+        allocatedBlocks.add(contiguousFreeBlocks.get(bestFitIndex).start);
+        allocatedBlocks.add(fileSize);
         return allocatedBlocks;
     }
 }

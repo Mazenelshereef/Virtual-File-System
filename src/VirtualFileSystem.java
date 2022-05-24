@@ -115,8 +115,19 @@ public class VirtualFileSystem {
             throw new Exception("ERROR: Parent directory does not exist!");
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         ArrayList<Integer> allocatedBlocks = allocator.allocate(fileSize);//may throw an exception
-        SpaceManager.getInstance().allocateMemory(allocatedBlocks);
-        MyFile file = new MyFile(fileName, allocatedBlocks);
+        //set the allocation type of the file
+        AllocationType allocationType;
+        if (allocator instanceof ContiguousAllocator)
+            allocationType = AllocationType.CONTIGUOUS;
+        else if (allocator instanceof LinkedAllocator)
+            allocationType = AllocationType.LINKED;
+        else
+            allocationType = AllocationType.INDEXED;
+        //allocate the memory to the file
+        SpaceManager.getInstance().allocateMemory(allocatedBlocks, allocationType);
+        //create the file
+        MyFile file = new MyFile(fileName, allocatedBlocks, allocationType);
+        //add the file to the parent directory
         parentDirectory.addFile(file);
     }
 
