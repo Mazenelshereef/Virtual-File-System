@@ -11,7 +11,6 @@ public class Main {
                 Scanner scanner = new Scanner(System.in);
                 int systemSizeInKB = scanner.nextInt();
                 VirtualFileSystem.getInstance().setSystemSizeInKB(systemSizeInKB);
-                scanner.close();
             }
         } catch (Exception e) {
             System.out.println(e.toString());;
@@ -64,24 +63,28 @@ public class Main {
             if (command.get(0).equals("CreateFile")) {
                 try {
                     vfs.createFile(command.get(1), Integer.parseInt(command.get(2)));
+                    System.out.println("File created successfully");
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }
             } else if (command.get(0).equals("DeleteFile")) {
                 try {
                     vfs.deleteFile(command.get(1));
+                    System.out.println("File deleted successfully");
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }
             } else if (command.get(0).equals("CreateFolder")) {
                 try {
                     vfs.createFolder(command.get(1));
+                    System.out.println("Folder created successfully");
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }
             } else if (command.get(0).equals("DeleteFolder")) {
                 try {
                     vfs.deleteFolder(command.get(1));
+                    System.out.println("Folder deleted successfully");
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }

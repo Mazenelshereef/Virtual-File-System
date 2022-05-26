@@ -5,6 +5,8 @@ public class Directory {
     private Directory parent;
     public ArrayList<MyFile> files;
     private ArrayList<Directory> subDirectories;
+    private ArrayList<User> usersCanCreate;
+    private ArrayList<User> usersCanDelete;
 
     public Directory(String directoryName) {
         this.directoryName = directoryName;
@@ -24,7 +26,14 @@ public class Directory {
     public Directory getParent() {
         return parent;
     }
-
+   public void addToUsersCanCreate(User user){
+   usersCanCreate.add(user);
+   
+   } 
+   public void addToUsersCanDelete(User user){
+   usersCanDelete.add(user);
+   
+   } 
     public void addFile(MyFile file) {
         file.setParent(this);
         files.add(file);

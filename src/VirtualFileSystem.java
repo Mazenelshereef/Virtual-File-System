@@ -5,11 +5,19 @@ public class VirtualFileSystem {
     private int systemSizeInKB;
     private Allocator allocator;
     private ArrayList<Integer> memory;
+    private ArrayList<User> systemUsers;
     private Directory root;
+    private User admin;
+    private User currentUser;
 
     private VirtualFileSystem() {
         root = new Directory("root");
         memory = new ArrayList<Integer>();
+        systemUsers = new ArrayList<User> ();
+        admin = new User("admin","admin");
+        systemUsers.add(admin);
+        currentUser = admin;
+
     }
 
     public static VirtualFileSystem getInstance() {
@@ -86,6 +94,8 @@ public class VirtualFileSystem {
     public Directory getDirectory(String directoryPath) {
         if (directoryPath.equals("root"))
             return root;
+        if (!directoryPath.contains("/"))
+            return null;
         // check that the main folder is "root"
         if (!directoryPath.substring(0, directoryPath.indexOf("/")).equals("root"))
             return null;
@@ -190,7 +200,67 @@ public class VirtualFileSystem {
         }
         System.out.println();
     }
-
+    
+     public boolean checkIfUserNameExists(String user){
+         for(int i=0; i<systemUsers.size(); i++)
+         {
+             if(systemUsers.get(i).getUserName().equals(user))
+             {return true;}
+         }
+         return false;
+     }
+     
+     public User getUser(String user, String password){
+         
+          for(int i=0; i<systemUsers.size(); i++)
+         {
+             if(systemUsers.get(i).getUserName().equals(user) && systemUsers.get(i).getPassword().equals(password))
+             {return systemUsers.get(i);}
+         }
+          return null;
+     }
+     
+     public void addUser(String userName, String password)throws Exception{
+         if (checkIfUserNameExists(userName) != false)
+            throw new Exception("ERROR: User already exists!");
+          if (currentUser != admin)
+            throw new Exception("ERROR: this command is specified for Admin!");
+          else{
+            User user = new User(userName,password);
+          }
+            systemUsers.add(user);
+     }
+     
+     public void loginUser(String userName, String password)throws Exception{
+         if (getUser(userName, password) == null)
+            throw new Exception("ERROR: incorrect Username or password!");
+         else{
+         currentUser = getUser(userName, password);
+         }
+     }
+    
+    public void grantAccess(User user, Directory directory, String access)throws Exception   
+    {
+        if(currentUser!=admin)
+            throw new Exception("ERROR: this command is specified for Admin!");
+        else{
+                if(access == "10"){
+                    directory.addToUsersCanCreate(user);
+                }
+                else if(access == "01"){
+                    directory.addToUsersCanDelete(user);
+                }
+                else if(access == "11"){
+                    directory.addToUsersCanCreate(user);
+                    directory.addToUsersCanDelete(user);
+                }
+                 else if(access == "00"){
+                }
+                else{
+                    throw new Exception("ERROR: Invalid Access respresentaion!");
+                }
+             } 
+    }
     public void displayDiskStructure(){
         root.printDirectoryStructure(0);
     }
