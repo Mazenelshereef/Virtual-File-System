@@ -126,7 +126,7 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(filePath.substring(0, filePath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanCreate(currentUser))    
+        else if (!parentDirectory.checkIfCanCreate(currentUser) && currentUser != admin)    
             throw new Exception("ERROR: This user can not create files in this directory!");
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         ArrayList<Integer> allocatedBlocks = allocator.allocate(fileSize);//may throw an exception
@@ -150,7 +150,7 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(filePath.substring(0, filePath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanDelete(currentUser))    
+        else if (!parentDirectory.checkIfCanDelete(currentUser)&& currentUser != admin)    
             throw new Exception("ERROR: This user can not delete files in this directory!");
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         MyFile file = parentDirectory.getFile(fileName);
@@ -167,7 +167,7 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(directoryPath.substring(0, directoryPath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanCreate(currentUser))    
+        else if (!parentDirectory.checkIfCanCreate(currentUser) && currentUser != admin)    
             throw new Exception("ERROR: This user can not create folder in this directory!");
         String folderName = directoryPath.substring(directoryPath.lastIndexOf("/") + 1);
         Directory folder = new Directory(folderName);
@@ -178,7 +178,7 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(directoryPath.substring(0, directoryPath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanDelete(currentUser))    
+        else if (!parentDirectory.checkIfCanDelete(currentUser) && currentUser != admin)    
             throw new Exception("ERROR: This user can not delete directories in this directory!");
         String folderName = directoryPath.substring(directoryPath.lastIndexOf("/") + 1);
         Directory folder = parentDirectory.getSubDirectory(folderName);
@@ -258,17 +258,17 @@ public class VirtualFileSystem {
         else{
                 Directory directory = getDirectory(directoryPath);
                 User user = getUser(userName);
-                if(access == "10"){
+                if(access.equals("10")){
                     directory.addToUsersCanCreate(user);
                 }
-                else if(access == "01"){
+                else if(access.equals("01")){
                     directory.addToUsersCanDelete(user);
                 }
-                else if(access == "11"){
+                else if(access.equals("11")){
                     directory.addToUsersCanCreate(user);
                     directory.addToUsersCanDelete(user);
                 }
-                 else if(access == "00"){
+                 else if(access.equals("00")){
                 }
                 else{
                     throw new Exception("ERROR: Invalid Access respresentaion!");
