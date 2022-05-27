@@ -89,12 +89,6 @@ public class Main {
                     System.out.println(e.toString());
                 }
                 
-            } else if (command.get(0).equals("TellUser")) {
-                try {
-                    System.out.println("The current Logged in user is: " + vfs.getCurrentUser().getUserName());
-                } catch (Exception e) {
-                    System.out.println(e.toString());
-                } 
             } else if (command.get(0).equals("CUser")) {
                 try {
                     vfs.addUser(command.get(1), command.get(2));
@@ -120,6 +114,8 @@ public class Main {
                 vfs.displayDiskStatus();
             } else if (command.get(0).equals("DisplayDiskStructure")) {
                 vfs.displayDiskStructure();
+            }else if (command.get(0).equals("TellUser")) {
+                System.out.println("The current Logged in user is: " + vfs.getCurrentUser().getUserName());
             } else if (command.get(0).equals("Exit")) {
                 System.out.println("Exiting...");
                 break;

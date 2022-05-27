@@ -4,8 +4,9 @@ import java.util.List;
 
 public class CommandParser {
     private static CommandParser instance;
-    private String[] allCmds = { "CreateFile", "CreateFolder", "DeleteFile", "DeleteFolder", "DisplayDiskStatus", "DisplayDiskStructure", "Exit" };
-    private int[] Size = {3,2,2,2,1,1,1};
+    private String[] allCmds = { "CreateFile", "CreateFolder", "DeleteFile", "DeleteFolder",
+     "DisplayDiskStatus", "DisplayDiskStructure","CUser", "Login", "Grant", "TellUser", "Exit" };
+    private int[] Size = {3,2,2,2,1,1,3,3,4,1,1};
     private CommandParser() {
     }
 
