@@ -12,6 +12,8 @@ public class Main {
                 int systemSizeInKB = scanner.nextInt();
                 VirtualFileSystem.getInstance().setSystemSizeInKB(systemSizeInKB);
             }
+            if(!FileParser.getInstance().parseFile()){} //parse if not empty
+            
         } catch (Exception e) {
             System.out.println(e.toString());;
         }
@@ -20,6 +22,7 @@ public class Main {
     public static void closeSystem(){
         try {
             FileParser.getInstance().updateFile();
+            FileParser.getInstance().updateUsersFile();
         } catch (Exception e) {
             System.out.println(e.toString());
         }

@@ -20,29 +20,48 @@ public class FileParser {
         public  boolean parseUsersFile() throws Exception {
             VirtualFileSystem system = VirtualFileSystem.getInstance();
             File file = new File("user.txt");
-            FileReader fileReader = new FileReader(file);
-            int c;
-            StringBuilder sb = new StringBuilder();
-            while ((c = fileReader.read()) != -1) {
-                sb.append((char) c);
-            }
-            fileReader.close();
-            String fileContent = sb.toString();
-            // check if it is empty
-            if (fileContent.equals("")) {
-                return false;
-            }
-            String[] lines = fileContent.split("\n");
-            List<String> stringLines = new ArrayList<String>(Arrays.asList(lines));
-    
-            for (int i = 0; i < stringLines.size(); i++) {
-                String[] userNamePassword = stringLines.get(i).split(",");
-                system.addUser(userNamePassword[0], userNamePassword[1]);
-    
-            }
-    
+        try {
+                FileReader fileReader = new FileReader(file);
+                int c;
+                StringBuilder sb = new StringBuilder();
+                while ((c = fileReader.read()) != -1) {
+                    sb.append((char) c);
+                }
+                fileReader.close();
+                String fileContent = sb.toString();
+                // check if it is empty
+                if (fileContent.equals("")) {
+                    return false;
+                }
+                String[] lines = fileContent.split("\n");
+                List<String> stringLines = new ArrayList<String>(Arrays.asList(lines));
+        
+                for (int i = 0; i < stringLines.size(); i++) {
+                    String[] userNamePassword = stringLines.get(i).split(",");
+                    system.addUser(userNamePassword[0], userNamePassword[1]);
+        
+                }
+        } catch (Exception e) {
+            throw new Exception("Error parsing file: " + e.toString());
+        }
             return true;
     
+        }
+        
+        public void updateUsersFile() throws Exception {
+            // overwrite file
+            VirtualFileSystem system = VirtualFileSystem.getInstance();
+            File file = new File("user.txt");
+    
+            try (FileWriter fileWriter = new FileWriter(file)) {
+                for (int i = 0; i < system.getSystemUsers().size(); i++) {
+    
+                    fileWriter.write(system.getSystemUsers().get(i).getUserName() + ","
+                            + system.getSystemUsers().get(i).getPassword() + "\n");
+    
+                }
+            }catch (Exception e) {
+                throw new Exception("Error writing file: " + e.toString());}
         }
         
 
