@@ -13,8 +13,8 @@ public class VirtualFileSystem {
     private VirtualFileSystem() {
         root = new Directory("root");
         memory = new ArrayList<Integer>();
-        systemUsers = new ArrayList<User> ();
-        admin = new User("admin","admin");
+        systemUsers = new ArrayList<User>();
+        admin = new User("admin", "admin");
         systemUsers.add(admin);
         currentUser = admin;
 
@@ -25,6 +25,10 @@ public class VirtualFileSystem {
             instance = new VirtualFileSystem();
         }
         return instance;
+    }
+
+    public ArrayList<User> getSystemUsers() {
+        return systemUsers;
     }
 
     public void setSystemSizeInKB(int systemSizeInKB) {
@@ -120,17 +124,17 @@ public class VirtualFileSystem {
     }
 
     void createFile(String filePath, int fileSize) throws Exception {
-        //check that no file exists with the same path
+        // check that no file exists with the same path
         if (getFile(filePath) != null)
             throw new Exception("ERROR: File already exists with the same path!");
         Directory parentDirectory = getDirectory(filePath.substring(0, filePath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanCreate(currentUser) && currentUser != admin)    
+        else if (!parentDirectory.checkIfCanCreate(currentUser) && currentUser != admin)
             throw new Exception("ERROR: This user can not create files in this directory!");
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-        ArrayList<Integer> allocatedBlocks = allocator.allocate(fileSize);//may throw an exception
-        //set the allocation type of the file
+        ArrayList<Integer> allocatedBlocks = allocator.allocate(fileSize);// may throw an exception
+        // set the allocation type of the file
         AllocationType allocationType;
         if (allocator instanceof ContiguousAllocator)
             allocationType = AllocationType.CONTIGUOUS;
@@ -138,11 +142,11 @@ public class VirtualFileSystem {
             allocationType = AllocationType.LINKED;
         else
             allocationType = AllocationType.INDEXED;
-        //allocate the memory to the file
+        // allocate the memory to the file
         SpaceManager.getInstance().allocateMemory(allocatedBlocks, allocationType);
-        //create the file
+        // create the file
         MyFile file = new MyFile(fileName, allocatedBlocks, allocationType);
-        //add the file to the parent directory
+        // add the file to the parent directory
         parentDirectory.addFile(file);
     }
 
@@ -150,7 +154,7 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(filePath.substring(0, filePath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanDelete(currentUser)&& currentUser != admin)    
+        else if (!parentDirectory.checkIfCanDelete(currentUser) && currentUser != admin)
             throw new Exception("ERROR: This user can not delete files in this directory!");
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         MyFile file = parentDirectory.getFile(fileName);
@@ -161,13 +165,13 @@ public class VirtualFileSystem {
     }
 
     void createFolder(String directoryPath) throws Exception {
-        //check that no folder exists with the same path
+        // check that no folder exists with the same path
         if (getDirectory(directoryPath) != null)
             throw new Exception("ERROR: Folder already exists with the same path!");
         Directory parentDirectory = getDirectory(directoryPath.substring(0, directoryPath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanCreate(currentUser) && currentUser != admin)    
+        else if (!parentDirectory.checkIfCanCreate(currentUser) && currentUser != admin)
             throw new Exception("ERROR: This user can not create folder in this directory!");
         String folderName = directoryPath.substring(directoryPath.lastIndexOf("/") + 1);
         Directory folder = new Directory(folderName);
@@ -178,18 +182,18 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(directoryPath.substring(0, directoryPath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
-        else if (!parentDirectory.checkIfCanDelete(currentUser) && currentUser != admin)    
+        else if (!parentDirectory.checkIfCanDelete(currentUser) && currentUser != admin)
             throw new Exception("ERROR: This user can not delete directories in this directory!");
         String folderName = directoryPath.substring(directoryPath.lastIndexOf("/") + 1);
         Directory folder = parentDirectory.getSubDirectory(folderName);
         if (folder == null)
             throw new Exception("ERROR: Folder does not exist!");
-        //delete all the files in the folder
+        // delete all the files in the folder
         for (int i = 0; i < folder.getFiles().size(); i++) {
             MyFile file = folder.getFiles().get(i);
             SpaceManager.getInstance().deallocateMemory(file.getAllocatedBlocks(), file.getAllocationType());
         }
-        //delete all the sub-folders in the folder
+        // delete all the sub-folders in the folder
         for (int i = 0; i < folder.getSubDirectories().size(); i++) {
             Directory subFolder = folder.getSubDirectories().get(i);
             deleteFolder(directoryPath + "/" + subFolder.getDirectoryName());
@@ -197,7 +201,7 @@ public class VirtualFileSystem {
         parentDirectory.deleteSubDirectory(folder);
     }
 
-    public void displayDiskStatus(){
+    public void displayDiskStatus() {
         System.out.println("Disk Status:");
         ArrayList<Integer> freeBlocks = SpaceManager.getInstance().getFreeBlocks();
         System.out.println("Empty space: " + freeBlocks.size() + " blocks");
@@ -212,70 +216,66 @@ public class VirtualFileSystem {
         }
         System.out.println();
     }
-    
-     public boolean checkIfUserNameExists(String user){
-         for(int i=0; i<systemUsers.size(); i++)
-         {
-             if(systemUsers.get(i).getUserName().equals(user))
-             {return true;}
-         }
-         return false;
-     }
-     
-     public User getUser(String userName){
-         
-          for(int i=0; i<systemUsers.size(); i++)
-         {
-             if(systemUsers.get(i).getUserName().equals(userName))
-             {return systemUsers.get(i);}
-         }
-          return null;
-     }
-     
-     public void addUser(String userName, String password)throws Exception{
-         if (checkIfUserNameExists(userName) != false)
-            throw new Exception("ERROR: User already exists!");
-          if (currentUser != admin)
-            throw new Exception("ERROR: this command is specified for Admin!");
-          else{
-             systemUsers.add(new User(userName,password));
-          }
-           
-     }
-     
-     public void loginUser(String userName, String password)throws Exception{
-         if (getUser(userName) == null || !getUser(userName).getPassword().equals(password))
-            throw new Exception("ERROR: incorrect Username or password!");
-         else{
-         currentUser = getUser(userName);
-         }
-     }
-    
-    public void grantAccess(String userName, String directoryPath, String access)throws Exception   
-    {
-        if(currentUser!=admin)
-            throw new Exception("ERROR: this command is specified for Admin!");
-        else{
-                Directory directory = getDirectory(directoryPath);
-                User user = getUser(userName);
-                if(access.equals("10")){
-                    directory.addToUsersCanCreate(user);
-                }
-                else if(access.equals("01")){
-                    directory.addToUsersCanDelete(user);
-                }
-                else if(access.equals("11")){
-                    directory.addToUsersCanCreate(user);
-                    directory.addToUsersCanDelete(user);
-                }
-                 else if(access.equals("00")){
-                }
-                else{
-                    throw new Exception("ERROR: Invalid Access respresentaion!");
-                }
-             } 
+
+    public boolean checkIfUserNameExists(String user) {
+        for (int i = 0; i < systemUsers.size(); i++) {
+            if (systemUsers.get(i).getUserName().equals(user)) {
+                return true;
+            }
+        }
+        return false;
     }
-    public void displayDiskStructure(){
+
+    public User getUser(String userName) {
+
+        for (int i = 0; i < systemUsers.size(); i++) {
+            if (systemUsers.get(i).getUserName().equals(userName)) {
+                return systemUsers.get(i);
+            }
+        }
+        return null;
+    }
+
+    public void addUser(String userName, String password) throws Exception {
+        if (checkIfUserNameExists(userName) != false)
+            throw new Exception("ERROR: User already exists!");
+        if (currentUser != admin)
+            throw new Exception("ERROR: this command is specified for Admin!");
+        else {
+            systemUsers.add(new User(userName, password));
+        }
+
+    }
+
+    public void loginUser(String userName, String password) throws Exception {
+        if (getUser(userName) == null || !getUser(userName).getPassword().equals(password))
+            throw new Exception("ERROR: incorrect Username or password!");
+        else {
+            currentUser = getUser(userName);
+        }
+    }
+
+    public void grantAccess(String userName, String directoryPath, String access) throws Exception {
+        if (currentUser != admin)
+            throw new Exception("ERROR: this command is specified for Admin!");
+        else {
+            Directory directory = getDirectory(directoryPath);
+            User user = getUser(userName);
+            if (access.equals("10")) {
+                directory.addToUsersCanCreate(user);
+            } else if (access.equals("01")) {
+                directory.addToUsersCanDelete(user);
+            } else if (access.equals("11")) {
+                directory.addToUsersCanCreate(user);
+                directory.addToUsersCanDelete(user);
+            } else if (access.equals("00")) {
+            } else {
+                throw new Exception("ERROR: Invalid Access respresentaion!");
+            }
+        }
+    }
+
+    public void displayDiskStructure() {
         root.printDirectoryStructure(0);
     }
 }

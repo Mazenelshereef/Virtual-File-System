@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileParser {
     private static FileParser instance;
@@ -14,8 +16,37 @@ public class FileParser {
             instance = new FileParser();
         }
         return instance;
-    }
+    } 
+        public  boolean parseUsersFile() throws Exception {
+            VirtualFileSystem system = VirtualFileSystem.getInstance();
+            File file = new File("user.txt");
+            FileReader fileReader = new FileReader(file);
+            int c;
+            StringBuilder sb = new StringBuilder();
+            while ((c = fileReader.read()) != -1) {
+                sb.append((char) c);
+            }
+            fileReader.close();
+            String fileContent = sb.toString();
+            // check if it is empty
+            if (fileContent.equals("")) {
+                return false;
+            }
+            String[] lines = fileContent.split("\n");
+            List<String> stringLines = new ArrayList<String>(Arrays.asList(lines));
+    
+            for (int i = 0; i < stringLines.size(); i++) {
+                String[] userNamePassword = stringLines.get(i).split(",");
+                system.addUser(userNamePassword[0], userNamePassword[1]);
+    
+            }
+    
+            return true;
+    
+        }
+        
 
+    
     public boolean parseFile() throws Exception{
         VirtualFileSystem system = VirtualFileSystem.getInstance();
         File file = new File("DiskStructure.txt");
