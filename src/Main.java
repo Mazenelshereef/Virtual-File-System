@@ -88,6 +88,34 @@ public class Main {
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }
+                
+            } else if (command.get(0).equals("TellUser")) {
+                try {
+                    System.out.println("The current Logged in user is: " + vfs.getCurrentUser().getUserName());
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                } 
+            } else if (command.get(0).equals("CUser")) {
+                try {
+                    vfs.addUser(command.get(1), command.get(2));
+                    System.out.println("User created successfully");
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                } 
+            } else if (command.get(0).equals("Grant")) {
+                try {
+                    vfs.grantAccess(command.get(1), command.get(2), command.get(3));
+                    System.out.println(command.get(1) + " capabilities is granted  successfully");
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                } 
+            } else if (command.get(0).equals("Login")) {
+                try {
+                    vfs.loginUser(command.get(1), command.get(2));
+                    System.out.println("Logged in successfully");
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                } 
             } else if (command.get(0).equals("DisplayDiskStatus")) {
                 vfs.displayDiskStatus();
             } else if (command.get(0).equals("DisplayDiskStructure")) {

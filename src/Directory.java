@@ -26,14 +26,43 @@ public class Directory {
     public Directory getParent() {
         return parent;
     }
-   public void addToUsersCanCreate(User user){
-   usersCanCreate.add(user);
+
+    public void addToUsersCanCreate(User user){
+    usersCanCreate.add(user);
    
-   } 
-   public void addToUsersCanDelete(User user){
-   usersCanDelete.add(user);
+    }
+
+    public void addToUsersCanDelete(User user){
+    usersCanDelete.add(user);
    
-   } 
+    } 
+
+    public ArrayList<User> getUsersCanCreate() {
+        return usersCanCreate;
+    }
+
+    public ArrayList<User> getUsersCanDelete() {
+        return usersCanDelete;
+    }
+
+    public boolean checkIfCanCreate(User user){
+        for(int i=0; i<usersCanCreate.size(); i++){
+            if(user==usersCanCreate.get(i)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfCanDelete(User user){
+        for(int i=0; i<usersCanDelete.size(); i++){
+            if(user==usersCanDelete.get(i)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addFile(MyFile file) {
         file.setParent(this);
         files.add(file);

@@ -54,6 +54,10 @@ public class VirtualFileSystem {
         return root;
     }
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
     public MyFile getFile(String filePath) {
         // check that the main folder is "root"
         if (!filePath.substring(0, filePath.indexOf("/")).equals("root"))
@@ -122,6 +126,8 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(filePath.substring(0, filePath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
+        else if (!parentDirectory.checkIfCanCreate(currentUser))    
+            throw new Exception("ERROR: This user can not create files in this directory!");
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         ArrayList<Integer> allocatedBlocks = allocator.allocate(fileSize);//may throw an exception
         //set the allocation type of the file
@@ -144,6 +150,8 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(filePath.substring(0, filePath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
+        else if (!parentDirectory.checkIfCanDelete(currentUser))    
+            throw new Exception("ERROR: This user can not delete files in this directory!");
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         MyFile file = parentDirectory.getFile(fileName);
         if (file == null)
@@ -159,6 +167,8 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(directoryPath.substring(0, directoryPath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
+        else if (!parentDirectory.checkIfCanCreate(currentUser))    
+            throw new Exception("ERROR: This user can not create folder in this directory!");
         String folderName = directoryPath.substring(directoryPath.lastIndexOf("/") + 1);
         Directory folder = new Directory(folderName);
         parentDirectory.addSubDirectory(folder);
@@ -168,6 +178,8 @@ public class VirtualFileSystem {
         Directory parentDirectory = getDirectory(directoryPath.substring(0, directoryPath.lastIndexOf("/")));
         if (parentDirectory == null)
             throw new Exception("ERROR: Parent directory does not exist!");
+        else if (!parentDirectory.checkIfCanDelete(currentUser))    
+            throw new Exception("ERROR: This user can not delete directories in this directory!");
         String folderName = directoryPath.substring(directoryPath.lastIndexOf("/") + 1);
         Directory folder = parentDirectory.getSubDirectory(folderName);
         if (folder == null)
@@ -210,11 +222,11 @@ public class VirtualFileSystem {
          return false;
      }
      
-     public User getUser(String user, String password){
+     public User getUser(String userName){
          
           for(int i=0; i<systemUsers.size(); i++)
          {
-             if(systemUsers.get(i).getUserName().equals(user) && systemUsers.get(i).getPassword().equals(password))
+             if(systemUsers.get(i).getUserName().equals(userName))
              {return systemUsers.get(i);}
          }
           return null;
@@ -226,24 +238,26 @@ public class VirtualFileSystem {
           if (currentUser != admin)
             throw new Exception("ERROR: this command is specified for Admin!");
           else{
-            User user = new User(userName,password);
+             systemUsers.add(new User(userName,password));
           }
-            systemUsers.add(user);
+           
      }
      
      public void loginUser(String userName, String password)throws Exception{
-         if (getUser(userName, password) == null)
+         if (getUser(userName) == null || getUser(userName).getPassword()!= password)
             throw new Exception("ERROR: incorrect Username or password!");
          else{
-         currentUser = getUser(userName, password);
+         currentUser = getUser(userName);
          }
      }
     
-    public void grantAccess(User user, Directory directory, String access)throws Exception   
+    public void grantAccess(String userName, String directoryPath, String access)throws Exception   
     {
         if(currentUser!=admin)
             throw new Exception("ERROR: this command is specified for Admin!");
         else{
+                Directory directory = getDirectory(directoryPath);
+                User user = getUser(userName);
                 if(access == "10"){
                     directory.addToUsersCanCreate(user);
                 }
