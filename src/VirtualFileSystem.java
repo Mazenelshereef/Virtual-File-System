@@ -244,7 +244,7 @@ public class VirtualFileSystem {
      }
      
      public void loginUser(String userName, String password)throws Exception{
-         if (getUser(userName) == null || getUser(userName).getPassword()!= password)
+         if (getUser(userName) == null || !getUser(userName).getPassword().equals(password))
             throw new Exception("ERROR: incorrect Username or password!");
          else{
          currentUser = getUser(userName);

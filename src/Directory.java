@@ -13,6 +13,9 @@ public class Directory {
         this.parent = null;
         files = new ArrayList<MyFile>();
         subDirectories = new ArrayList<Directory>();
+        usersCanCreate = new ArrayList<User>();
+        usersCanDelete = new ArrayList<User>();
+        
     }
 
     public void setDirectoryName(String directoryName) {
