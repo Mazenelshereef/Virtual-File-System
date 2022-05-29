@@ -58,11 +58,14 @@ public class Directory {
     }
 
     public boolean checkIfCanDelete(User user){
-        for(int i=0; i<usersCanDelete.size(); i++){
-            if(user==usersCanDelete.get(i)){
+        Directory currentDirectory=this;
+        while(currentDirectory!=null){
+            if(currentDirectory.getUsersCanDelete().contains(user)){
                 return true;
             }
+            currentDirectory=currentDirectory.getParent();
         }
+       
         return false;
     }
 

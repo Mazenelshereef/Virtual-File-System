@@ -13,7 +13,7 @@ public class Main {
                 VirtualFileSystem.getInstance().setSystemSizeInKB(systemSizeInKB);
             }
             if(!FileParser.getInstance().parseUsersFile()){} //parse if not empty
-          /*   if(!FileParser.getInstance().parseCapabilitiesFile()){} */ //parse if not empty
+            if(!FileParser.getInstance().parseCapabilitiesFile()){} //parse if not empty
             
         } catch (Exception e) {
             System.out.println(e.toString());;
@@ -24,7 +24,7 @@ public class Main {
         try {
             FileParser.getInstance().updateFile();
             FileParser.getInstance().updateUsersFile();
-           /*  FileParser.getInstance().updateCapabilitiesFile(); */
+             FileParser.getInstance().updateCapabilitiesFile(); 
         } catch (Exception e) {
             System.out.println(e.toString());
         }

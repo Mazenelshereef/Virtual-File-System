@@ -17,7 +17,6 @@ public class FileParser {
         }
         return instance;
     }
-
     public boolean parseCapabilitiesFile() throws Exception {
         VirtualFileSystem system = VirtualFileSystem.getInstance();
         File file = new File("capabilities.txt");
@@ -61,7 +60,7 @@ public class FileParser {
                 }
             }
         } catch (Exception e) {
-            throw new Exception("Error parsing file: " + e.toString()); // 1 2 1 2 1 2
+            throw new Exception("Error parsing capabilities file: " + e.toString()); // 1 2 1 2 1 2
         }
         return true;
     }
@@ -76,7 +75,18 @@ public class FileParser {
                 if(folderToManageAccess== system.getRoot()){
                       folderPath = system.getRoot().getDirectoryName();
                 }
-                else{  folderPath = folderToManageAccess.getParent().getDirectoryName() + "/" + folderToManageAccess.getDirectoryName();}
+                else{// get the path till find the root directory and add it to the path
+                    Directory temp = folderToManageAccess;
+                    while(temp.getParent()!=null){
+                        folderPath = temp.getDirectoryName()+"/"+folderPath;
+                        temp = temp.getParent();
+                    }
+                    folderPath="root/"+folderPath;
+                    //remove the last "/"
+                    folderPath = folderPath.substring(0,folderPath.length()-1);
+                   
+                    // folderPath = folderToManageAccess.getParent().getDirectoryName() + "/" + folderToManageAccess.getDirectoryName();
+                 }
                 String NameCap = "";
                 for (int j = 0; j < folderToManageAccess.getUsersCanCreate().size(); j++) {
                     User user = folderToManageAccess.getUsersCanCreate().get(j);
@@ -105,7 +115,7 @@ public class FileParser {
             }
             fileWriter.close();
         } catch (Exception e) {
-            throw new Exception("Error updating file: " + e.toString());
+            throw new Exception("Error updating capabilities file: " + e.toString());
         }
         return true;
 
@@ -137,7 +147,7 @@ public class FileParser {
         
                 }
         } catch (Exception e) {
-            throw new Exception("Error parsing file: " + e.toString());
+            throw new Exception("Error parsing Users file: " + e.toString());
         }
             return true;
     
@@ -156,11 +166,9 @@ public class FileParser {
     
                 }
             }catch (Exception e) {
-                throw new Exception("Error writing file: " + e.toString());}
+                throw new Exception("Error writing User file: " + e.toString());}
         }
-        
 
-    
     public boolean parseFile() throws Exception{
         VirtualFileSystem system = VirtualFileSystem.getInstance();
         File file = new File("DiskStructure.txt");
@@ -211,8 +219,8 @@ public class FileParser {
                         String fileName = directoryStructure.substring(startIndex, i);
                         MyFile fileToAdd = new MyFile(fileName);
                         currentDirectory.addFile(fileToAdd);
-                        startIndex = i + 1;
                     }
+                    startIndex = i + 1;
                 }
             }
 
