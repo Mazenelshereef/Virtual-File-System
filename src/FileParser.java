@@ -16,7 +16,102 @@ public class FileParser {
             instance = new FileParser();
         }
         return instance;
-    } 
+    }
+
+    public boolean parseCapabilitiesFile() throws Exception {
+        VirtualFileSystem system = VirtualFileSystem.getInstance();
+        File file = new File("capabilities.txt");
+        try {
+            FileReader fileReader = new FileReader(file);
+            int c;
+            StringBuilder sb = new StringBuilder();
+            while ((c = fileReader.read()) != -1) {
+                sb.append((char) c);
+            }
+            fileReader.close();
+            String fileContent = sb.toString();
+            // check if it is empty
+            if (fileContent.equals("")) {
+                return false;
+            }
+            String[] lines = fileContent.split("\\r?\\n");
+
+            List<String> stringLines = new ArrayList<String>(Arrays.asList(lines));
+
+            for (int i = 0; i < stringLines.size(); i++) {
+                String folderPath = stringLines.get(i).substring(0, lines[i].indexOf(","));
+                if(folderPath.length()+1 == lines[i].length()){
+                    continue;
+                }
+                Directory folderToManageAccess = system.getDirectory(folderPath);
+                String NameCap = stringLines.get(i).substring(lines[i].indexOf(",") + 1);// ignore folder path
+                String[] content = NameCap.split(",");// split every word in the line
+
+                List<String> stringContent = new ArrayList<String>(Arrays.asList(content));
+                for (int j = 0; j < stringContent.size(); j++) {
+                    if (j % 2 == 0 && stringContent.get(j + 1).equals("10")) {
+                        folderToManageAccess.addToUsersCanCreate(system.getUser(stringContent.get(j)));
+                    } else if (j % 2 == 0 && stringContent.get(j + 1).equals("11")) {
+                        folderToManageAccess.addToUsersCanCreate(system.getUser(stringContent.get(j)));
+                        folderToManageAccess.addToUsersCanDelete(system.getUser(stringContent.get(j)));
+                    } else if (j % 2 == 0 && stringContent.get(j + 1).equals("01")) {
+                        folderToManageAccess.addToUsersCanDelete(system.getUser(stringContent.get(j)));
+                    } else if (j % 2 == 0 && stringContent.get(j + 1).equals("00")) {
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception("Error parsing file: " + e.toString()); // 1 2 1 2 1 2
+        }
+        return true;
+    }
+    public  boolean updateCapabilitiesFile() throws Exception{
+        VirtualFileSystem system = VirtualFileSystem.getInstance();
+        File file = new File("capabilities.txt");
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            for (int i = 0; i < system.getAllDirectories().size(); i++) {
+                String  folderPath = "";
+                Directory folderToManageAccess = system.getAllDirectories().get(i);
+                if(folderToManageAccess== system.getRoot()){
+                      folderPath = system.getRoot().getDirectoryName();
+                }
+                else{  folderPath = folderToManageAccess.getParent().getDirectoryName() + "/" + folderToManageAccess.getDirectoryName();}
+                String NameCap = "";
+                for (int j = 0; j < folderToManageAccess.getUsersCanCreate().size(); j++) {
+                    User user = folderToManageAccess.getUsersCanCreate().get(j);
+                    if( folderToManageAccess.getUsersCanDelete().contains(user))
+                    NameCap += user.getUserName() + "," + "11" + ",";
+                    else{
+                        NameCap += user.getUserName() + "," + "10" + ",";
+                    }
+                }
+                 for (int j = 0; j < folderToManageAccess.getUsersCanDelete().size(); j++) {
+                    User user = folderToManageAccess.getUsersCanDelete().get(j);
+                    if( folderToManageAccess.getUsersCanCreate().contains(user)){}
+                    else{
+                        NameCap += user.getUserName() + "," + "01" + ",";
+                    }
+                } 
+                if( NameCap.equals("")){
+                    fileWriter.write(folderPath + "," + NameCap + "\n");
+                }
+                else{
+                 
+                    NameCap = NameCap.substring(0, NameCap.length()-1);
+                    fileWriter.write(folderPath + "," + NameCap  + "\n");
+                }
+               
+            }
+            fileWriter.close();
+        } catch (Exception e) {
+            throw new Exception("Error updating file: " + e.toString());
+        }
+        return true;
+
+    }
+
+
         public  boolean parseUsersFile() throws Exception {
             VirtualFileSystem system = VirtualFileSystem.getInstance();
             File file = new File("user.txt");
@@ -36,7 +131,7 @@ public class FileParser {
                 String[] lines = fileContent.split("\n");
                 List<String> stringLines = new ArrayList<String>(Arrays.asList(lines));
         
-                for (int i = 0; i < stringLines.size(); i++) {
+                for (int i = 1; i < stringLines.size(); i++) {
                     String[] userNamePassword = stringLines.get(i).split(",");
                     system.addUser(userNamePassword[0], userNamePassword[1]);
         

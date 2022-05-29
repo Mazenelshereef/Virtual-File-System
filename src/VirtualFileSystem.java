@@ -81,6 +81,15 @@ public class VirtualFileSystem {
         }
         return currentDirectory.getFile(filePath);
     }
+    public ArrayList <Directory> getAllDirectories(Directory directory){
+        ArrayList<Directory> directories = new ArrayList<Directory>();
+        directories.add(directory);
+        for (int i = 0; i < root.getSubDirectories().size(); i++) {
+            directories.addAll(getAllDirectories(directory.getSubDirectories().get(i)));
+        }
+        return directories;
+    }
+    
 
     public ArrayList<MyFile> getAllFiles() {
         ArrayList<MyFile> allFiles = new ArrayList<MyFile>();
@@ -98,6 +107,23 @@ public class VirtualFileSystem {
         }
         return allFiles;
     }
+    public ArrayList<Directory> getAllDirectories() {
+        ArrayList<Directory> allDirectories = new ArrayList<Directory>();
+        ArrayList<Directory> systemDirectories = new ArrayList<Directory>();
+        systemDirectories.add(root);
+        while (systemDirectories.size() > 0) {
+            Directory currentDirectory = systemDirectories.get(0);
+            systemDirectories.remove(0);
+            for (int i = 0; i < currentDirectory.getSubDirectories().size(); i++) {
+                systemDirectories.add(currentDirectory.getSubDirectories().get(i));
+            }
+            allDirectories.add(currentDirectory);
+        }
+        return allDirectories;
+    }
+       
+    
+    
 
     public Directory getDirectory(String directoryPath) {
         if (directoryPath.equals("root"))
@@ -175,6 +201,7 @@ public class VirtualFileSystem {
             throw new Exception("ERROR: This user can not create folder in this directory!");
         String folderName = directoryPath.substring(directoryPath.lastIndexOf("/") + 1);
         Directory folder = new Directory(folderName);
+        folder.setParent(parentDirectory);
         parentDirectory.addSubDirectory(folder);
     }
 
